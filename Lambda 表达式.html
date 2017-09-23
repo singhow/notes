@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lambda 表达式</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<base href='file:\\\C:\Users\GJS\Dropbox\C.S\booknotes\Java 8 实战\src\'/>
+</head>
+<body>
+<h2 id="lambda-">Lambda 表达式</h2>
+<h3 id="lambda-">Lambda 及其使用</h3>
+<p><strong>Lambda 表达式</strong>是一种表示<strong>可传递的匿名函数</strong>的方式：它<strong>没有名称</strong>，但它有参数列表、函数主体、返回类型，可能还有一个可以抛出的异常列表。</p>
+<ul>
+<li><strong>匿名</strong><blockquote>
+<p>没有有一个明确的名称。</p>
+</blockquote>
+</li><li><strong>函数</strong><blockquote>
+<p>Lambda 函数<strong>不属于某个特定的类</strong>，但和方法一样， Lambda 有参数列表、函数主体、返回类型，还可能有可以抛出的异常列表。</p>
+</blockquote>
+</li><li><strong>传递</strong><blockquote>
+<p>Lambda 表达式可以作为参数<strong>传递给方法</strong>或<strong>存储在变量</strong>中。</p>
+</blockquote>
+</li><li><strong>简洁</strong><blockquote>
+<p>无需像匿名类那样写很多模板代码。</p>
+</blockquote>
+</li></ul>
+<p>Lambda 的<strong>基本语法</strong>如下：</p>
+<pre><code>(parameters) -&gt; expression
+
+(parameters) -&gt; { statements; }
+</code></pre><blockquote>
+<p>可以只为一个<strong>表达式</strong>，或是<strong>包含多条语句</strong>。</p>
+</blockquote>
+<p>Lambda 表达式的<strong>定义</strong>如下：</p>
+<pre><code>(Apple a1, Apple a2) -&gt; a1.getWeight().compareTo(a2.getWeight());
+</code></pre><ul>
+<li><strong>参数列表</strong><blockquote>
+<p>采用了 Comparator 中 compare 方法的参数，两个 Apple。</p>
+</blockquote>
+</li><li><strong>箭头</strong><blockquote>
+<p>-&gt; 把参数列表与 Lambda 主体分隔开。</p>
+</blockquote>
+</li><li><strong>Lambda 主体</strong><blockquote>
+<p>比较两个 Apple 的重量。表达式就是 Lambda 的返回值。</p>
+</blockquote>
+</li></ul>
+<p>Lambda 表达式仅可用于<strong>上下文是函数式接口</strong>的情况。 函数式接口就是<strong>只定义一个抽象方法</strong>的接口。</p>
+<blockquote>
+<p>接口可以拥有默认方法，但只要接口只定义了一个抽象方法，它就仍然是一个函数式接口。</p>
+</blockquote>
+<p>Lambda 表达式允许你直接<strong>以内联的形式</strong>为函数式接口的抽象方法<strong>提供实现</strong>，并把整个表达式作为函数式接口的实例。</p>
+<blockquote>
+<p>你用匿名内部类也可以完成同样的事情，只不过比较笨拙：需要<strong>提供一个实现</strong>，然后<strong>再直接内联</strong>将它实例化。</p>
+</blockquote>
+<pre><code>Runnable r1 = () -&gt; System.out.println(&quot;Hello World 1&quot;);
+
+Runnable r2 = new Runnable(){
+    public void run(){
+        System.out.println(&quot;Hello World 2&quot;);
+    }
+};
+
+public static void process(Runnable r){
+    r.run();
+}
+
+process(r1);
+process(r2);
+
+process(() -&gt; System.out.println(&quot;Hello World 3&quot;));
+</code></pre><blockquote>
+<p>r1 使用 Lambda 实现，r2 使用匿名类实现。</p>
+<p>也可在 process() 中直接传递 Lambda 表达式。</p>
+</blockquote>
+<p>函数式接口的<strong>抽象方法的签名</strong>基本上就是 <strong>Lambda 表达式的签名</strong>，这种抽象方法叫作<strong>函数描述符</strong>。</p>
+<blockquote>
+<p>Runnable 接口可以看作一个什么也不接受什么也不返回（void）的函数的签名，因为它唯一的 run 抽象方法什么也不接受，什么也不返回。</p>
+<p>() -&gt; void 代表了参数列表为空，且返回 void 的函数。</p>
+</blockquote>
+<p>Lambda 表达式可以被赋给一个变量，或传递给一个接受函数式接口作为参数的方法。</p>
+<blockquote>
+<p>Lambda 表达式的签名要和函数式接口的抽象方法一样。</p>
+</blockquote>
+<p>在 Java 8 中，函数式接口会带有 <strong>@FunctionalInterface 注解</strong>，这个注解用于表示该接口会<strong>设计成一个函数式接口</strong>。</p>
+<blockquote>
+<p>如果你用 @FunctionalInterface 定义了一个接口，而它却不是函数式接口，编译器将返回一个提示原因的错误。</p>
+</blockquote>
+<h3 id="-">环绕执行模式</h3>
+<p><strong>资源处理</strong>（例如处理文件或数据库）时一个常见的模式就是<strong>打开</strong>一个资源，做一些<strong>处理</strong>，然后<strong>关闭</strong>资源。</p>
+<blockquote>
+<p>这个设置和清理阶段总是很类似，并且会围绕着执行处理的那些重要代码。这就是所谓的<strong>环绕执行</strong>（execute around）<strong>模式</strong>。</p>
+</blockquote>
+<p><img src="http://i.imgur.com/hT2WIbD.png" alt=""></p>
+<blockquote>
+<p>任务 A 和任务 B 周围都环绕着进行准备/清理的同一段冗余代码。</p>
+</blockquote>
+<pre><code>public static String processFile() throws IOException {
+    try (BufferedReader br =
+        new BufferedReader(new FileReader(&quot;data.txt&quot;))) {
+            return br.readLine();
+    }
+}
+</code></pre><blockquote>
+<p>只能读取文件的第一行。若想要返回头两行，或是其他操作，则需要一种方法把行为传递给 processFile，以便它可以利用 BufferedReader 执行不同的行为。</p>
+</blockquote>
+<p><strong>行为参数化</strong>，使用函数式接口来传递行为。</p>
+<pre><code>@FunctionalInterface
+public interface BufferedReaderProcessor {
+    String process(BufferedReader b) throws IOException;
+}
+
+public static String processFile(BufferedReaderProcessor p)
+throws IOException {
+    //…
+}
+</code></pre><blockquote>
+<p>定义一个函数式接口。</p>
+<blockquote>
+<p>此时需要一个接收 BufferedReader 并返回 String 的 Lambda。</p>
+<p>即 Lambda 表达式 BufferedReader -&gt; String。 </p>
+</blockquote>
+</blockquote>
+<p><strong>执行一个行为</strong>。</p>
+<pre><code>public static String processFile(BufferedReaderProcessor p)
+throws IOException {
+    try (BufferedReader br =
+        new BufferedReader(new FileReader(&quot;data.txt&quot;))) {
+            return p.process(br);
+    }
+}
+</code></pre><p><strong>传递 Lambda</strong>。</p>
+<pre><code>String oneLine = processFile((BufferedReader br) -&gt; br.readLine());
+
+String twoLines =
+    processFile((BufferedReader br) -&gt; br.readLine() + br.readLine());
+</code></pre><blockquote>
+<p>Lambda 表达式允许你<strong>直接内联</strong>，为函数式接口的抽象方法提供实现，并且将整个表达式作为函数式接口的一个实例。</p>
+<p>通过传递不同的 Lambda 重用 processFile 方法，即可以不同的方式处理文件。</p>
+</blockquote>
+<h3 id="-">使用函数接口</h3>
+<p>函数式接口定义且<strong>只定义了一个抽象方法</strong>，它的<strong>抽象方法的签名</strong>称为<strong>函数描述符</strong>。</p>
+<blockquote>
+<p>抽象方法的签名可以<strong>描述 Lambda 表达式的签名</strong>。</p>
+</blockquote>
+<p><strong>Predicate&lt;T&gt; 接口</strong>定义了一个 <strong>test 方法</strong>，它<strong>接受泛型 T 对象</strong>，并<strong>返回一个 boolean</strong>。</p>
+<blockquote>
+<p>若需要表示一个涉及类型 T 的布尔表达式，可以使用该接口。</p>
+<p>T -&gt; boolean </p>
+</blockquote>
+<p><strong>Consumer&lt;T&gt; 接口</strong>定义了一个 <strong>accept 方法</strong>，它<strong>接受泛型 T 的对象</strong>，<strong>没有返回（void）</strong>。</p>
+<blockquote>
+<p>若需要访问类型 T 的对象，并对其执行某些操作，可以使用该接口。</p>
+<p>T -&gt; void</p>
+</blockquote>
+<p><strong>Function&lt;T, R&gt; 接口</strong>定义了一个 <strong>apply 方法</strong>，它<strong>接受一个泛型 T 的对象</strong>，并<strong>返回一个泛型 R 的对象</strong>。</p>
+<blockquote>
+<p>若需要定义一个 Lambda，将输入对象的信息映射到输出，就可以使用该接口。</p>
+<p>T -&gt; R</p>
+</blockquote>
+<p>Java 类型<strong>要么是引用类型</strong>（比如 Byte、 Integer），<strong>要么是原始类型</strong>（比如 byte、 int）。但<strong>泛型只能绑定到引用类型</strong>。</p>
+<blockquote>
+<p>在 Java 里有一个将原始类型转换为对应的引用类型的<strong>装箱</strong>（boxing）<strong>机制</strong>，以及将引用类型转换为对应的原始类型的<strong>拆箱</strong>（unboxing）<strong>机制</strong>。</p>
+</blockquote>
+<p>Java 中有一个<strong>自动装箱</strong>（autoboxing）<strong>机制</strong>来帮助开发者自动完成装箱和拆箱操作。 </p>
+<blockquote>
+<p>装箱后的值本质上就是把原始类型包裹起来，并<strong>保存在堆里</strong>。因此，装箱后的值需要<strong>更多的内存</strong>，并需要<strong>额外的内存搜索</strong>来获取被包裹的原始值。这在性能方面会造成影响。</p>
+<p>Java 8 为函数式接口带来了一个<strong>专门的版本</strong>，以便在输入和输出都是原始类型时<strong>避免自动装箱</strong>的操作。</p>
+</blockquote>
+<p>一般来说，针对<strong>专门的输入参数类型</strong>的函数式接口的名称都要加上<strong>对应的原始类型前缀</strong>。</p>
+<blockquote>
+<p>例如 DoublePredicate、 IntConsumer、 LongBinaryOperator、 IntFunction 等。</p>
+</blockquote>
+<p><strong>Lambdas 及函数式接口</strong>的使用示例</p>
+<table>
+<thead>
+<tr>
+<th>使用案例</th>
+<th>Lambda 的例子</th>
+<th>对应的函数式接口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>布尔表达式</td>
+<td>(List&lt;String&gt; list) -&gt; list.isEmpty()</td>
+<td>Predicate&lt;List&lt;String&gt;&gt;</td>
+</tr>
+<tr>
+<td>创建对象</td>
+<td>() -&gt; new Apple(10)</td>
+<td>Supplier&lt;Apple&gt;</td>
+</tr>
+<tr>
+<td>消费一个对象</td>
+<td>(Apple a) -&gt; System.out.println(a.getWeight())</td>
+<td>Consumer&lt;Apple&gt;</td>
+</tr>
+<tr>
+<td>从一个对象中选择/提取</td>
+<td>(String s) -&gt; s.length()</td>
+<td>Function&lt;String, Integer&gt; 或 ToIntFunction&lt;String&gt;</td>
+</tr>
+<tr>
+<td>合并两个值</td>
+<td>(int a, int b) -&gt; a * b</td>
+<td>IntBinaryOperator</td>
+</tr>
+<tr>
+<td>比较两个对象</td>
+<td>(Apple a1, Apple a2) -&gt; a1.getWeight().compareTo(a2.getWeight())</td>
+<td>Comparator&lt;Apple&gt; 或 BiFunction&lt;Apple, Apple, Integer&gt; 或 ToIntBiFunction&lt;Apple, Apple&gt;</td>
+</tr>
+</tbody>
+</table>
+<p>任何函数式接口都<strong>不允许抛出受检异常</strong>（checked exception）。若需要 Lambda 表达式抛出异常，有两种办法：</p>
+<ul>
+<li>定义一个自己的函数式接口，并<strong>声明受检异常</strong>。</li><li>把 Lambda 包含在一个 <strong>try/catch 块</strong>中。</li></ul>
+<h3 id="-">类型检查、推断以及限制</h3>
+<p>Lambda 表达式本身并不包含它在实现哪个函数式接口的信息，它的类型是<strong>从使用 Lambda 的上下文推断出来</strong>的。</p>
+<blockquote>
+<p>上下文（接受它传递的方法的参数，或接受它的值的局部变量）中 <strong>Lambda 表达式需要的类型</strong>称为<strong>目标类型</strong>。</p>
+</blockquote>
+<pre><code>filter(List&lt;Apple&gt; inventory, Predicate&lt;Apple&gt; p);
+
+List&lt;Apple&gt; heavierThan150g =
+    filter(inventory, (Apple a) -&gt; a.getWeight() &gt; 150);
+</code></pre><blockquote>
+<p>Lambda 的类型检查过程如下所示：</p>
+<blockquote>
+<p>首先，找出 filter 方法的声明。</p>
+<p>第二，根据 filter 的声明判断目标类型是 Predicate&lt;Apple&gt;。</p>
+<p>第三，Predicate&lt;Apple&gt; 是一个函数式接口，定义了一个 test 抽象方法。</p>
+<p>第四，test 方法描述了一个函数描述符，它接受一个 Apple，并返回一个 boolean。</p>
+<p>第五，函数描述符 Apple -&gt; boolean 匹配 Lambda 的签名，类型检查正确。</p>
+</blockquote>
+<p>若 Lambda 表达式抛出一个异常，那么抽象方法所声明的 throws 语句也必须与之匹配。</p>
+</blockquote>
+<p>通过<strong>目标类型</strong>，同一个 Lambda 表达式可以<strong>与不同的函数式接口联系</strong>起来，只要它们的抽象方法<strong>签名能够兼容</strong>。</p>
+<blockquote>
+<p>同一个 Lambda 可用于多个不同的函数式接口。</p>
+</blockquote>
+<p>Java 7 中引入了<strong>菱形运算符</strong>（&lt;&gt;）利用泛型推断<strong>从上下文推断类型</strong>的思想。一个类实例表达式可以出现在<strong>两个或更多不同的上下文</strong>中，并会像下面这样推断出适当的类型参数：</p>
+<pre><code>List&lt;String&gt; listOfStrings = new ArrayList&lt;&gt;();
+List&lt;Integer&gt; listOfIntegers = new ArrayList&lt;&gt;();
+</code></pre><p>若一个 <strong>Lambda 的主体</strong>是一个<strong>语句表达式</strong>，那它和一个<strong>返回 void 的函数描述符兼容</strong>（当然需要参数列表也兼容）。</p>
+<pre><code>// Predicate 返回一个 boolean
+Predicate&lt;String&gt; p = s -&gt; list.add(s);
+
+// Consumer 返回一个 void
+Consumer&lt;String&gt; b = s -&gt; list.add(s);
+</code></pre><p>Lambda 表达式可以从赋值的上下文、方法调用的上下文（参数和返回值），以及类型转换的上下文中获得目标类型。</p>
+<blockquote>
+<p>目标类型除了用来检查一个 Lambda 是否可以用于某个特定的上下文，还可用来推断 Lambda 参数的类型。</p>
+</blockquote>
+<p>Java 编译器会<strong>从上下文（目标类型）推断出</strong>用什么函数式接口来配合 Lambda 表达式，这意味着它也可以推断出适合 Lambda 的签名，因为函数描述符可以通过目标类型来得到。</p>
+<blockquote>
+<p>编译器可以了解 Lambda 表达式的参数类型，这样就可以在 Lambda 语法中<strong>省去标注参数类型</strong>。</p>
+</blockquote>
+<p>Lambda 表达式除了使用其主体里面的参数，也可像匿名类一样<strong>使用自由变量</strong>。</p>
+<blockquote>
+<p>这些自由变量被称作<strong>捕获 Lambda</strong>。 </p>
+</blockquote>
+<pre><code>int portNumber = 1337;
+Runnable r = () -&gt; System.out.println(portNumber);
+</code></pre><blockquote>
+<p>Lambda 捕获了 portNumber 变量。</p>
+</blockquote>
+<p>Lambda 可以没有限制地捕获（即在其主体中引用）实例变量和静态变量。但<strong>局部变量</strong>必须<strong>显式声明为 final</strong>，或事实上是final。</p>
+<blockquote>
+<p>Lambda 表达式只能<strong>捕获</strong>指派给它们的<strong>局部变量一次</strong>。</p>
+</blockquote>
+<p>对局部变量的<strong>限制</strong>基于下述原因：</p>
+<blockquote>
+<p>第一，实例变量和局部变量的<strong>实现不同</strong>。实例变量都<strong>存储在堆中</strong>，而局部变量则<strong>保存在栈上</strong>。</p>
+<blockquote>
+<p>若 Lambda 可以直接访问局部变量，且 Lambda 在一个线程中使用，则使用 Lambda 的线程可能会在分配该变量的线程将这个变量收回之后去访问该变量。</p>
+<p>Java 在访问自由局部变量时，实际上是在<strong>访问它的副本</strong>，而非其原始变量。若局部变量仅赋值一次，那就没有区别了。</p>
+</blockquote>
+<p>第二，本限制<strong>不鼓励使用改变外部变量的</strong>典型命令式编程模式。</p>
+<blockquote>
+<p>这种模式会阻碍很容易做到的并行处理。</p>
+</blockquote>
+</blockquote>
+<p><strong>闭包</strong>（closure）是一个<strong>函数的实例</strong>，且它可以<strong>无限制地访问</strong>那个函数的<strong>非本地变量</strong>。</p>
+<blockquote>
+<p>闭包可以<strong>作为参数传递</strong>给另一个函数，也可以<strong>访问和修改其作用域之外的变量</strong>。</p>
+</blockquote>
+<p>Java 8 的 Lambda 和匿名类可以做类似于闭包的事情：它们可以作为参数传递给方法，并且可以访问其作用域之外的变量。</p>
+<blockquote>
+<p>但它们<strong>不能修改定义 Lambda 的方法的局部变量</strong>的内容。这些变量必须是隐式 final 的。</p>
+<blockquote>
+<p>可以认为 Lambda 是<strong>对值封闭</strong>，而<strong>不是对变量封闭</strong>。</p>
+</blockquote>
+<p>这种限制存在的原因在于局部变量保存在栈上，并且隐式表示它们<strong>仅限于其所在线程</strong>。</p>
+<blockquote>
+<p>若允许捕获可改变的局部变量，就会引发造成线程不安全的可能性。</p>
+<p>实例变量可以，因为它们保存在堆中，而堆是在线程之间共享的。</p>
+</blockquote>
+</blockquote>
+<h3 id="-">方法引用</h3>
+<p><strong>方法引用</strong>使你可以<strong>重复使用现有的方法定义</strong>，并像 Lambda 一样传递它们。</p>
+<pre><code>inventory.sort((Apple a1, Apple a2)-&gt; a1.getWeight().compareTo(a2.getWeight()));
+
+inventory.sort(comparing(Apple::getWeight));
+</code></pre><blockquote>
+<p>使用方法引用和 java.util.Comparator.comparing。</p>
+<p>目标引用放在分隔符 :: 前，方法的名称放在后面。</p>
+<blockquote>
+<p>不需要括号，因为并<strong>没有实际调用</strong>这个方法。 </p>
+</blockquote>
+</blockquote>
+<p>方法引用可以被看作<strong>仅仅调用特定方法的 Lambda 的</strong>一种快捷写法。</p>
+<blockquote>
+<p>它的基本思想是，若一个 Lambda 代表的只是“直接调用这个方法”，那<strong>最好使用名称调用它</strong>，而不是去描述如何调用它。</p>
+<p>事实上，方法引用就是让你<strong>根据已有的方法实现来创建 Lambda</strong>。</p>
+<p>方法引用可看作是针对<strong>涉及单一方法</strong>的 Lambda 的<strong>语法糖</strong>。</p>
+</blockquote>
+<p>方法引用主要有三类：</p>
+<ul>
+<li><strong>指向静态方法的方法引用</strong><blockquote>
+<p>例如 Integer 的 parseInt 方法，写作 Integer::parseInt。</p>
+</blockquote>
+</li><li><strong> 指向任意类型实例方法的方法引用</strong><blockquote>
+<p>引用一个对象的方法，这个对象本身是 Lambda 的一个参数。</p>
+<p>例如 String 的 length 方法，写作 String::length。</p>
+</blockquote>
+</li><li><strong>指向现有对象的实例方法的方法引用</strong><blockquote>
+<p>调用一个已经存在的外部对象中的方法。</p>
+<p>假设一个局部变量 expensiveTransaction 用于存放 Transaction 类型的对象，它支持实例方法 getValue。</p>
+<p>那么可以写作 expensiveTransaction::getValue。</p>
+</blockquote>
+</li></ul>
+<p><img src="http://i.imgur.com/SxYoQK7.png" alt=""></p>
+<blockquote>
+<p>编译器会进行一种<strong>与 Lambda 表达式类似的类型检查</strong>过程，来确定对于给定的函数式接口，这个方法引用是否有效：方法引用的签名必须和上下文类型匹配。</p>
+</blockquote>
+<p>对于一个现有构造函数，可以利用它的<strong>名称和关键字 new 来创建</strong>它的一个引用：</p>
+<pre><code>ClassName::new。
+</code></pre><blockquote>
+<p>其功能与指向静态方法的引用类似。</p>
+</blockquote>
+<p>若构造函数<strong>没有参数</strong>，即其形式为 <strong>void -&gt; void</strong>，则它适合 <strong>Supplier 的签名</strong>。</p>
+<pre><code>Supplier&lt;Apple&gt; c1 = Apple::new;
+Apple a1 = c1.get();
+</code></pre><blockquote>
+<p>构造函数引用指向默认的 Apple() 构造函数。</p>
+<p>调用 Supplier 的 get 方法将产生一个新的 Apple。</p>
+</blockquote>
+<p>若构造函数<strong>有一个参数</strong>，即其形式为 <strong>T -&gt; void</strong>，则它适合 <strong>Function 的签名</strong>。</p>
+<pre><code>Function&lt;Integer, Apple&gt; c2 = Apple::new;
+Apple a2 = c2.apply(110);
+</code></pre><blockquote>
+<p>指向 Apple(Integer weight) 的构造函数引用。</p>
+<p>调用该 Function 函数的 apply 方法，根据要求的重量，产生一个 Apple。</p>
+</blockquote>
+<p>若构造函数<strong>有两个参数</strong>，即其形式为 <strong>(T, R) -&gt; void</strong>，则它适合 <strong>BiFunction 的签名</strong>。</p>
+<pre><code>BiFunction&lt;String, Integer, Apple&gt; c3 = Apple::new;
+Apple c3 = c3.apply(&quot;green&quot;, 110);
+</code></pre><blockquote>
+<p>指向 Apple(String color, Integer weight) 的构造函数引用。</p>
+<p>调用该 BiFunction 函数的 apply 方法，根据要求的颜色和重量，产生一个新的 Apple 对象。</p>
+</blockquote>
+<h3 id="lambda-">Lambda 表达式的复合</h3>
+<p>用于传递 Lambda 表达式的 Comparator、Function 和 Predicate 函数式接口<strong>提供了进行复合的方法</strong>，通过复合可将多个简单的 Lambda 复合成复杂的表达式。</p>
+<blockquote>
+<p>可以让两个谓词之间做一个 or 操作，组合成一个更大的谓词。</p>
+<p>可以让一个函数的结果成为另一个函数的输入。</p>
+</blockquote>
+<h4 id="-">比较器复合</h4>
+<p>Comparator 接口的 <strong>reversed() 默认方法</strong>可以对给定的比较器进行逆序。</p>
+<pre><code>Comparator&lt;Apple&gt; c = Comparator.comparing(Apple::getWeight);
+
+inventory.sort(comparing(Apple::getWeight).reversed());
+</code></pre><blockquote>
+<p>comparing() 辅助静态方法接受一个 Function 来提取 Comparable 键值，并生成一个 Comparator 对象。</p>
+<p>reversed() 方法对给定的比较器逆序。</p>
+<blockquote>
+<p>按重量递减排序。</p>
+</blockquote>
+</blockquote>
+<p>Comparator 接口的 <strong>thenComparing() 默认方法</strong>接收一个函数作为参数，若两个对象用第一个 Comparator 比较之后结果一样的，就提供第二个 Comparator。</p>
+<pre><code>inventory.sort(comparing(Apple::getWeight)
+    .reversed()
+    .thenComparing(Apple::getCountry));
+</code></pre><blockquote>
+<p>按重量递减排序，两个苹果一样重时，进一步按国家排序。</p>
+</blockquote>
+<h4 id="-">谓词复合</h4>
+<p>Predicate 接口包括 <strong>negate、 and 和 or 三个默认方法</strong>，and 和 or 方法是按照在表达式链中的位置，<strong>从左向右确定优先级</strong>的。</p>
+<pre><code>Predicate&lt;Apple&gt; notRedApple = redApple.negate();
+
+Predicate&lt;Apple&gt; redAndHeavyApple =
+    redApple.and(a -&gt; a.getWeight() &gt; 150);
+
+Predicate&lt;Apple&gt; redAndHeavyAppleOrGreen =
+    redApple.and(a -&gt; a.getWeight() &gt; 150)
+    .or(a -&gt; &quot;green&quot;.equals(a.getColor()));
+</code></pre><blockquote>
+<p>返回一个不是红色的苹果。</p>
+<p>返回一个既是红色又比较重的苹果。</p>
+<p>返回一个指定重量的红苹果，或是绿苹果。</p>
+</blockquote>
+<h4 id="-">函数复合</h4>
+<p>Function 接口提供了 <strong>andThen 和 compose 两个默认方法</strong>，它们都会<strong>返回 Function 的一个实例</strong>。<br><img src="http://i.imgur.com/Mq6uTjh.png" alt=""></p>
+<p><strong>andThen() 方法</strong>会返回一个函数，它先对输入应用一个给定函数，再对输出应用另一个函数。</p>
+<pre><code>Function&lt;Integer, Integer&gt; f = x -&gt; x + 1;
+Function&lt;Integer, Integer&gt; g = x -&gt; x * 2;
+
+Function&lt;Integer, Integer&gt; h = f.andThen(g);
+int result = h.apply(1);
+</code></pre><blockquote>
+<p>函数 f 给数字加 1，函数 g 给数字乘 2。</p>
+<p>函数 f 和 g 可组合成函数 h，先给数字加 1，再给结果乘 2。</p>
+</blockquote>
+<p><strong>compose() 方法</strong>先把给定的函数用作 compose 的参数里面给的那个函数，然后再把函数本身用于结果。</p>
+<pre><code>Function&lt;Integer, Integer&gt; f = x -&gt; x + 1;
+Function&lt;Integer, Integer&gt; g = x -&gt; x * 2;
+
+Function&lt;Integer, Integer&gt; h = f.compose(g);
+int result = h.apply(1);
+</code></pre><blockquote>
+<p>先对数字乘 2，再给数字加 1。</p>
+</blockquote>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

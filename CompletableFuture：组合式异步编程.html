@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CompletableFuture：组合式异步编程</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<base href='file:\\\D:\cloud\Dropbox\C.S\booknotes\Java 8 实战\src\'/>
+</head>
+<body>
+<h2 id="completablefuture-">CompletableFuture：组合式异步编程</h2>
+<p>随着多核处理器的出现，提升应用程序处理速度最有效的方式是编写能充分发挥多核能力的软件。</p>
+<blockquote>
+<p>可以通过<strong>切分大型的任务</strong>，让每个<strong>子任务并行运行</strong>来实现这一目标。</p>
+<p>相对直接使用线程的方式，还可以<strong>使用分支/合并框架和并行流</strong>能以更简单、更有效的方式实现这一目标。</p>
+</blockquote>
+<p>第二种趋势反映在公共 API 日益增长的互联网服务应用，现在的网络应用都<strong>采用“混聚”（mash-up）的方式</strong>：它会使用来自多个来源的内容，将这些内容聚合在一起，方便用户的生活。<br><img src="https://i.imgur.com/UATnodS.png" alt=""></p>
+<blockquote>
+<p>要实现类似的服务，你需要与互联网上的<strong>多个 Web 服务通信</strong>。可是，你并不希望因为<strong>等待某些服务的响应</strong>，<strong>阻塞应用程序的运行</strong>，浪费数十亿宝贵的 CPU 时钟周期。</p>
+<p>这些场景体现了多任务程序设计的另一面。</p>
+</blockquote>
+<p>若开发者的意图是<strong>实现并发</strong>，而非并行，或者主要目标是<strong>在同一个 CPU 上执行几个松耦合的任务</strong>，充分利用 CPU 的核，让其足够忙碌，从而<strong>最大化程序的吞吐量</strong>，那么真正想做的是<strong>避免</strong>因为等待远程服务的返回，或者对数据库的查询，而<strong>阻塞线程的执行</strong>。<br><img src="https://i.imgur.com/UlEiVrc.png" alt=""></p>
+<h3 id="future-">Future 接口</h3>
+<p>Future 接口的设计初衷是<strong>对将来某个时刻会发生的结果</strong>进行建模。</p>
+<blockquote>
+<p>它建模了一种<strong>异步计算</strong>，返回一个<strong>执行运算结果的引用</strong>，当运算结束后，这个引用<strong>被返回给调用方</strong>。</p>
+<blockquote>
+<p>在 Future 中<strong>触发那些潜在耗时的操作</strong>把调用线程解放出来，让它能继续执行其他有价值的工作，而不是呆呆等待耗时的操作完成。</p>
+</blockquote>
+<p>要使用 Future，通常只需<strong>将耗时的操作封装在一个 Callable 对象</strong>中，再将它<strong>提交给 ExecutorService</strong> 即可。</p>
+<blockquote>
+<p>这种编程方式使得线程可以在 ExecutorService <strong>以并发方式调用另一个线程执行耗时操作</strong>的同时，去执行一些其他的任务。</p>
+<p>若已经运行到没有异步操作的结果就无法继续任何有意义的工作时，可以调用 Future 的 <strong>get 方法去获取操作的结果</strong>。</p>
+</blockquote>
+</blockquote>
+<p><img src="https://i.imgur.com/2fwNoFh.png" alt=""></p>
+<blockquote>
+<p>Future 提供了一个<strong>重载版本的 get</strong> 方法，它接受一个<strong>超时的参数</strong>。</p>
+<blockquote>
+<p>你可以定义你的线程等待 Future 结果的最长时间。</p>
+</blockquote>
+</blockquote>
+<p>Future 接口提供了方法来<strong>检测异步计算是否已经结束</strong>（使用 isDone 方法），<strong>等待异步操作结束</strong>，以及<strong>获取计算的结果</strong>。但是这些特性还不足以让你编写简洁的并发代码。比如：</p>
+<ul>
+<li><strong>将两个异步计算合并为一个</strong>。<blockquote>
+<p>这两个异步计算之间相互独立，同时第二个又依赖于第一个的结果。</p>
+</blockquote>
+</li><li><strong>等待 Future 集合中的所有任务都完成</strong>。</li><li>仅等待 Future 集合中最快结束的任务完成（有可能因为它们试图通过不同的方式计算同一个值），并返回它的结果。</li><li><strong>通过编程方式完成一个 Future 任务的执行</strong>。<blockquote>
+<p>即以手工设定异步操作结果的方式。</p>
+</blockquote>
+</li><li><strong>应对 Future 的完成事件</strong>。<blockquote>
+<p>即当 Future 的完成事件发生时会收到通知，并能使用 Future 计算的结果进行下一步的操作，不只是简单地阻塞等待操作的结果。</p>
+</blockquote>
+</li></ul>
+<p><strong>CompletableFuture 类</strong>（它实现了 Future 接口）利用 Java 8 的新特性以更直观的方式<strong>将上述需求都变为可能</strong>。</p>
+<blockquote>
+<p>Stream 和 CompletableFuture 的设计都遵循了类似的模式：它们都<strong>使用了 Lambda 表达式以及流水线的思想</strong>。</p>
+<p>从这个角度可以说 <strong>CompletableFuture 和 Future</strong> 的关系就跟 <strong>Stream 和 Collection</strong> 的关系一样。</p>
+</blockquote>
+<p>CompletableFuture 的强大特性能使你学到几个重要的技能：</p>
+<ul>
+<li>首先，你会学到<strong>如何为你的客户提供异步 API</strong>。</li><li>其次，你会掌握如何<strong>让使用了同步 API 的代码变为非阻塞代码</strong>。<blockquote>
+<p>你会了解如何使用流水线<strong>将两个接续的异步操作合并为一个异步计算操作</strong>。</p>
+</blockquote>
+</li><li>你还会学到如何<strong>以响应式的方式处理异步操作的完成事件</strong>。</li></ul>
+<p><strong>同步 API</strong> 只是对传统方法调用的另一种称呼：你调用了某个方法，调用方<strong>在被调用方运行的过程中会等待</strong>，被调用方运行结束返回，调用方取得被调用方的返回值并继续运行。</p>
+<blockquote>
+<p>即使调用方和被调用方<strong>在不同的线程中运行</strong>，调用方<strong>还是需要等待</strong>被调用方结束运行，这即是<strong>阻塞式调用</strong>。</p>
+</blockquote>
+<p><strong>异步 API</strong> 会<strong>直接返回</strong>，或者至少在被调用方计算完成之前，将它<strong>剩余的计算任务交给另一个线程</strong>去做，该线程和调用方是异步的，这即是<strong>非阻塞式调用</strong>。</p>
+<blockquote>
+<p>执行剩余计算任务的线程会<strong>将它的计算结果返回给调用方</strong>。</p>
+<blockquote>
+<p>返回的方式<strong>要么是通过回调函数</strong>，要么是<strong>由调用方再次执行一个“等待，直到计算完成”的方法调用</strong>。</p>
+</blockquote>
+<p>这种方式的计算在 <strong>I/O 系统程序设计</strong>中非常常见：</p>
+<blockquote>
+<p><strong>发起一次磁盘访问</strong>，这次访问和你的其他计算操作是<strong>异步的</strong>，你完成其他的任务时，磁盘块的数据可能还没载入到内存，你只需要<strong>等待数据载入完成</strong>。</p>
+</blockquote>
+</blockquote>
+<h3 id="-api">实现异步 API</h3>
+<p>Future 是一个<strong>暂时还不可知值</strong>的处理器，这个值在<strong>计算完成后</strong>，可以通过<strong>调用它的 get 方法取得</strong>。</p>
+<p>若线程池中<strong>线程的数量过多</strong>，最终它们会<strong>竞争稀缺的处理器和内存资源</strong>，导致大量时间<strong>浪费在上下文切换上</strong>。</p>
+<blockquote>
+<p>反之，若线程的数目过少，处理器的一些核可能就无法充分利用。</p>
+<p><strong>线程池大小与处理器的利用率之比</strong>可以使用下面的公式进行估算：</p>
+<blockquote>
+<p>Nthreads = Ncpu <em> Ucpu </em> (1 + W/C)</p>
+<p>Ncpu 是<strong>处理器的核的数目</strong>，可通过 Runtime.getRuntime().availableProcessors() 得到。</p>
+<p>Ucpu 是<strong>期望的 CPU 利用率</strong>（介于 0 和 1）。</p>
+<p>W/C 是<strong>等待时间与计算时间的比率</strong>。</p>
+</blockquote>
+</blockquote>
+<p>到目前为止，<strong>对集合进行并行计算</strong>有两种方式：</p>
+<ul>
+<li>要么将其<strong>转化为并行流</strong>，利用 map 这样的操作开展工作。<blockquote>
+<p>若进行的是<strong>计算密集型的操作</strong>，并且没有 I/O，那么推荐<strong>使用 Stream 接口</strong>。</p>
+</blockquote>
+</li><li>要么<strong>枚举出集合中的每一个元素，创建新的线程</strong>，在 CompletableFuture 内对其进行操作。<blockquote>
+<p>这种方式提供了更多的灵活性，你可以<strong>调整线程池的大小</strong>，而这能帮助你确保整体的计算<strong>不会因为线程都在等待 I/O 而发生阻塞</strong>。</p>
+<p>若并行的工作单元<strong>涉及等待 I/O 的操作</strong>（包括网络连接等待），那么<strong>使用 CompletableFuture</strong> 灵活性更好。</p>
+</blockquote>
+</li></ul>
+<p>通常而言，名称中<strong>不带 Async 的方法</strong>和它的前一个任务一样，在<strong>同一个线程</strong>中运行；</p>
+<blockquote>
+<p>而名称<strong>以 Async 结尾的方法</strong>会将后续的任务提交到一个线程池，所以每个任务是由<strong>不同的线程</strong>处理的。</p>
+</blockquote>
+<h3 id="-">实践</h3>
+<p>使用<strong>顺序流</strong>查询价格：</p>
+<pre><code>public List&lt;String&gt; findPricesSequential(String product) {
+    return shops.stream()
+            .map(shop -&gt; shop.getPrice(product))
+            .map(Quote::parse)
+            .map(Discount::applyDiscount)
+            .collect(Collectors.toList());
+}
+</code></pre><p>使用<strong>并行流</strong>查询价格：</p>
+<pre><code>public List&lt;String&gt; findPricesParallel(String product) {
+    return shops.parallelStream()
+            .map(shop -&gt; shop.getPrice(product))
+            .map(Quote::parse)
+            .map(Discount::applyDiscount)
+            .collect(Collectors.toList());
+}
+</code></pre><p>使用<strong>异步请求</strong>查询价格：</p>
+<pre><code>public List&lt;String&gt; findPricesAsync(String product) {
+    List&lt;CompletableFuture&lt;String&gt;&gt; priceFutures =
+        shops.stream()
+        .map(shop -&gt; CompletableFuture.supplyAsync(
+            () -&gt; shop.getName() + &quot; price is &quot; + shop.getPrice(product)))
+        .collect(Collectors.toList());
+
+        return priceFutures.stream()
+                .map(CompletableFuture::join)
+                .collect(toList());
+}
+</code></pre><blockquote>
+<p>第一个流将 CompletableFutures 对象<strong>聚集到一个列表</strong>中，使得对象可以在其他对象完成操作之前就能启动。</p>
+<p>第二个流中对 CompletableFutures 对象调用 join 以<strong>等待其他对象完成</strong>，当所有对象都完成后，将结果<strong>归约到一个列表</strong>，然后返回。</p>
+</blockquote>
+<p>异步请求使用<strong>两个不同的 Stream 流水线</strong>来进行处理，其过程如下图所示：<br><img src="https://i.imgur.com/k4F9jFM.png" alt=""></p>
+<blockquote>
+<p>考虑流操作之间的延迟特性，若在<strong>单一流水线</strong>中处理流，发向不同商家的请求只有<strong>以同步、顺序执行的方式</strong>才会成功。</p>
+<blockquote>
+<p>因此如图中上半部分所示，每个创建 CompletableFuture 对象<strong>只能在前一个操作结束之后</strong>执行查询指定商家的动作、通知 join 方法返回计算结果。</p>
+</blockquote>
+<p>图中下半部分则表示先将 CompletableFutures 对象<strong>聚集到一个列表</strong>中，让对象们可以在<strong>等待其他对象完成操作之前就能启动</strong>。</p>
+<blockquote>
+<p>此处即使用到了<strong>两个不同的 Stream 流水线</strong>。</p>
+</blockquote>
+</blockquote>
+<p><strong>异步版本</strong>只比并行版本<strong>快一点</strong>，其原因如下：</p>
+<blockquote>
+<p>它们内部采用的是同样的通用线程池，<strong>默认都使用固定数目的线程</strong>，具体线程数取决于 Runtime.getRuntime().availableProcessors() 的返回值。</p>
+<p>然而 CompletableFuture 具有一定的优势，因为它允许你<strong>对执行器（Executor）进行配置</strong>，尤其是线程池的大小。</p>
+</blockquote>
+<p>使用<strong>带 executor 参数的异步请求</strong>查询价格：</p>
+<pre><code>public List&lt;String&gt; findPricesAsync(String product) {
+    List&lt;CompletableFuture&lt;String&gt;&gt; priceFutures =
+        shops.stream()
+        .map(shop -&gt; CompletableFuture.supplyAsync(
+            () -&gt; shop.getName() + &quot; price is &quot; + shop.getPrice(product),
+            executor))
+        .collect(Collectors.toList());
+
+        return priceFutures.stream()
+                .map(CompletableFuture::join)
+                .collect(toList());
+}
+</code></pre><blockquote>
+<p>supplyAsync 方法接受了第二个 executor 参数。 </p>
+</blockquote>
+<p><strong>使用 Discount 服务</strong>的查找价格方法：</p>
+<pre><code>public List&lt;String&gt; findPricesSequential(String product) {
+    return shops.stream()
+        .map(shop -&gt; shop.getPrice(product))
+        .map(Quote::parse)
+        .map(Discount::applyDiscount)
+        .collect(Collectors.toList()); // 将结果归约到一个列表
+}
+</code></pre><blockquote>
+<p>第一个 map 将每个 shop 对象转换成包含指定商品价格和折扣代码的字符串。</p>
+<p>第二个 map 对这些字符串进行了解析，在 Quote 对象中对它们进行转换。</p>
+<p>第三个 map 联系远程的 Discount 服务，计算出最终的折扣价格，然后返回该价格及提供该价格商品的 shop。</p>
+</blockquote>
+<p>使用带有<strong>同步操作和异步请求</strong>的方式查找价格：</p>
+<pre><code>public List&lt;String&gt; findPricesSyncAsync(String product) {
+    List&lt;CompletableFuture&lt;String&gt;&gt; priceFutures = 
+        shops.stream()
+        .map(shop -&gt; CompletableFuture.supplyAsync(
+            // 以异步方式取得每个 shop 中产品的原始价格
+            () -&gt; shop.getPrice(product), executor))
+        .map(future -&gt; future.thenApply(Quote::parse))
+        .map(future -&gt; future.thenCompose(quote -&gt; CompletableFuture
+            .supplyAsync(
+                // 使用了一个异步任务构造期望的 Future，申请折扣
+                () -&gt; Discount.applyDiscount(quote), executor)))
+        .collect(Collectors.toList());
+
+    return priceFutures.stream()
+            // 等待流中的所有 Future 执行完毕，并提取各自的返回值
+            .map(CompletableFuture::join)
+            .collect(Collectors.toList());
+}
+</code></pre><blockquote>
+<p>首先以异步方式取得每个 shop 中指定产品的原始价格。</p>
+<p>然后使用另一个异步任务构造期望的 Future，申请折扣。</p>
+<p>最后调用 join 等待流中的所有 Future 执行完毕，并提取各自的返回值。</p>
+</blockquote>
+<p><strong>构造同步和异步请求</strong>的三次转换的流程如下图所示：<br><img src="https://i.imgur.com/TgtpqdV.png" alt=""></p>
+<ul>
+<li><strong>异步获取价格</strong><blockquote>
+<p>以<strong>异步方式</strong>对 shop 进行查询，转换的结果是一个 Stream&lt;CompletableFuture&lt;String&gt;&gt;。</p>
+<p>运行结束后每个 CompletableFuture 对象中都会包含对应 shop 返回的字符串。</p>
+</blockquote>
+</li><li><strong>同步解析报价</strong><blockquote>
+<p>调用 <strong>thenApply 方法</strong>，将一个由字符串转换为 Quote 的方法作为参数传递给它。</p>
+<p>由于解析操作不涉及任何远程服务，也不会进行任何 I/O 操作，它几乎可以在第一时间进行，所以能够<strong>采用同步操作</strong>，不会带来太多的延迟。</p>
+</blockquote>
+</li><li><strong>异步为计算折扣价格构造 Future</strong><blockquote>
+<p>该操作涉及联系远程的 Discount 服务，因此希望它能够<strong>异步执行</strong>。</p>
+<p><strong>thenCompose 方法</strong>允许你<strong>对两个异步操作进行流水线</strong>，第一个操作完成时，将其<strong>结果作为参数传递给第二个操作</strong>。</p>
+<blockquote>
+<p>可以创建两个 CompletableFutures 对象，对第一个 CompletableFuture 对象调用 thenCompose，并向其传递一个函数。</p>
+<p>当第一个 CompletableFuture 执行完毕后，它的结果将作为该函数的参数，这个函数的返回值是以第一个 CompletableFuture 的返回做输入计算出的第二个 CompletableFuture 对象。</p>
+<p>使用这种方式，即使 Future 在向不同的商店收集报价，<strong>主线程还是能继续执行其他重要的操作</strong>，比如响应 UI 事件。</p>
+</blockquote>
+</blockquote>
+</li><li>通过使用 CompletableFuture 类提供的特性，在需要的地方把它们变成了异步操作。</li></ul>
+<p><strong>合并两个独立 CompletableFuture 对象</strong>的代码如下：</p>
+<pre><code>public List&lt;String&gt; findPricesInUSD(String product) {
+    List&lt;CompletableFuture&lt;Double&gt;&gt; priceFutures = new ArrayList&lt;&gt;();
+
+    for (Shop shop : shops) {
+        // Only the type of futurePriceInUSD has been changed to
+        // CompletableFuture so that it is compatible with the
+        // CompletableFuture::join operation below.
+        CompletableFuture&lt;Double&gt; futurePriceInUSD = 
+            CompletableFuture.supplyAsync(() -&gt; shop.getPrice(product))
+                .thenCombine(
+                    CompletableFuture.supplyAsync(
+                        () -&gt;  ExchangeService.getRate(Money.EUR, Money.USD)),
+                        (price, rate) -&gt; price * rate);
+
+        priceFutures.add(futurePriceInUSD);
+    }
+
+    // Drawback: The shop is not accessible anymore outside the loop,
+    // so the getName() call below has been commented out.
+    List&lt;String&gt; prices = priceFutures
+        .stream()
+        .map(CompletableFuture::join)
+        .map(price -&gt; /*shop.getName() +*/ &quot; price is &quot; + price)
+        .collect(Collectors.toList());
+
+    return prices;
+}
+</code></pre><p><strong>合并两个独立异步任务</strong>的流程如下图所示：<br><img src="https://i.imgur.com/SolvjMQ.png" alt=""></p>
+<blockquote>
+<p>多个任务在线程池中选择不同的线程执行，然后整合最终的运行结果。</p>
+</blockquote>
+<p>我们最终想要达到的效果是<strong>只要有商店返回商品价格就在第一时间显示返回值</strong>，不再等待那些还未返回的商店（有些甚至会发生超时）。</p>
+<blockquote>
+<p>首先要<strong>避免等待创建</strong>一个包含了所有价格的List创建完成。</p>
+<blockquote>
+<p>应该<strong>直接处理 CompletableFuture 流</strong>，这样每个 CompletableFuture 都在为某个商店执行必要的操作。</p>
+</blockquote>
+</blockquote>
+<p>返回一个 <strong>CompletableFuture 流</strong>：</p>
+<pre><code>public Stream&lt;CompletableFuture&lt;String&gt;&gt; findPricesStream(String product) {
+    return shops.stream()
+        .map(shop -&gt; CompletableFuture.supplyAsync(
+            () -&gt; shop.getPrice(product), executor))
+        .map(future -&gt; future.thenApply(Quote::parse))
+        .map(future -&gt; future.thenCompose(
+            quote -&gt; CompletableFuture.supplyAsync(
+                () -&gt; Discount.applyDiscount(quote), executor)));
+}
+</code></pre><p>现在可以为 findPricesStream 返回的 CompletableFuture <strong>流添加第四个 map 方法</strong>，它在每个 CompletableFuture 上<strong>注册一个操作</strong>，该操作会在 CompletableFuture <strong>完成执行后使用它的返回值 </strong>。</p>
+<blockquote>
+<p>CompletableFuture 的 <strong>thenAccept 方法</strong>提供了这一功能，它<strong>接收</strong> CompletableFuture 执行完毕后的<strong>返回值做参数</strong>。</p>
+<p>thenAccept 方法也提供了一个名为 <strong>thenAcceptAsync 的异步版本</strong>。</p>
+<blockquote>
+<p>异步版本的方法会对处理结果的消费者进行调度，从线程池中选择一个新的线程继续执行，不再由同一个线程完成 CompletableFuture 的所有任务。</p>
+</blockquote>
+</blockquote>
+<p><strong>响应 CompletableFuture 的 completion 事件</strong>：</p>
+<pre><code>CompletableFuture[] futures = findPricesStream(&quot;myPhone&quot;)
+    .map(f -&gt; f.thenAccept(System.out::println))
+    .toArray(size -&gt; new CompletableFuture[size]);
+
+CompletableFuture.allOf(futures).join();
+</code></pre><blockquote>
+<p>由于要<strong>避免不必要的上下文切换</strong>，更重要的是<strong>避免在等待线程上浪费时间</strong>，尽快响应 CompletableFuture 的 completion 事件，所以这里没有采用异步版本。</p>
+<p>thenAccept 方法中定义了<strong>如何处理 CompletableFuture 返回的结果</strong>，一旦 CompletableFuture 计算得到结果，它就返回一个 CompletableFuture&lt;Void&gt;，所以，map 操作<strong>返回</strong>的是一个 <strong>Stream&lt;CompletableFuture&lt;Void&gt;&gt;</strong>。</p>
+<blockquote>
+<p>此处想要最慢的商店也有机会打印输出返回的结果，因此把构成 Stream 的所有 CompletableFuture&lt;Void&gt; 对象放到了一个数组中，等待所有的任务执行完成。</p>
+</blockquote>
+<p><strong>allOf 工厂方法</strong>接收一个<strong>由 CompletableFuture 构成的数组</strong>，数组中的<strong>所有 CompletableFuture 对象执行完成之后</strong>，它<strong>返回一个 CompletableFuture&lt;Void&gt; 对象</strong>。</p>
+<p>若希望只要 CompletableFuture 对象数组中有<strong>任何一个执行完毕就不再等待</strong>，则可以使用一个 <strong>anyOf 工厂方法</strong>。</p>
+<blockquote>
+<p>该方法接收一个 CompletableFuture 对象构成的数组，返回由第一个执行完毕的 CompletableFuture 对象的返回值构成的 CompletableFuture&lt;Object&gt;。</p>
+</blockquote>
+</blockquote>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

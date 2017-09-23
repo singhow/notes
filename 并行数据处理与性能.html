@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>并行数据处理与性能</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<base href='file:\\\C:\Users\GJS\Dropbox\C.S\booknotes\Java 8 实战\src\'/>
+</head>
+<body>
+<h2 id="-">并行数据处理与性能</h2>
+<h3 id="-">并行流</h3>
+<p>Stream 接口中可通过对收集源调用 <strong>parallelStream 方法</strong>来把<strong>集合转换为并行流</strong>。</p>
+<blockquote>
+<p>并行流就是一个把内容分成多个数据块，并用不同的线程分别处理每个数据块的流。</p>
+</blockquote>
+<p>对顺序流<strong>调用 parallel 方法</strong>并不意味着流本身有任何实际的变化，它只是在内部设了一个 <strong>boolean 标志</strong>，表示在调用 parallel 之后进行的所有操作都并行执行。</p>
+<blockquote>
+<p>对并行流调用 <strong>sequential 方法</strong>就可以把它<strong>变成顺序流</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/xFRWJkP.png" alt=""></p>
+<p>并行流内部使用了默认的 <strong>ForkJoinPool</strong>，它默认的<strong>线程数量</strong>即处理器数量，该值由 <strong>Runtime.getRuntime().availableProcessors()</strong> 得到。</p>
+<p>通过系统属性 java.util.concurrent.ForkJoinPool.common.parallelism 可<strong>改变线程池的大小</strong>。</p>
+<pre><code>System.setProperty(&quot;java.util.concurrent.ForkJoinPool.common.parallelism&quot;,&quot;12&quot;);
+</code></pre><blockquote>
+<p><strong>全局设置</strong>，会影响代码中所有的并行流。</p>
+</blockquote>
+<p><strong>Stream.iterate() 方法</strong>生成的是<strong>装箱的对象</strong>，必须拆箱成数字才能求和。</p>
+<blockquote>
+<p>也<strong>很难</strong>把 iterate <strong>分割</strong>成多个独立块来执行，因为需要<strong>依赖前一次的结果</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/s9gXWtv.png" alt=""></p>
+<blockquote>
+<p>LongStream.rangeClosed 直接产生<strong>原始类型的 long</strong> 数字，<strong>没有装箱拆箱的开销</strong>。</p>
+<p>LongStream.rangeClosed 会生成<strong>数字范围</strong>，很<strong>容易拆分</strong>为独立的小块。</p>
+</blockquote>
+<p>选择<strong>适当的数据结构</strong>往往比并行化算法更重要。使用正确的数据结构然后使其并行工作能够保证最佳的性能。</p>
+<blockquote>
+<p>并行化过程本身需要<strong>对流做递归划分</strong>，把每个子流的归纳操作<strong>分配到不同的线程</strong>，然后把这些操作的结果<strong>合并成一个值</strong>。</p>
+<p>在多个内核之间移动数据的代价也可能很大，所以很重要的一点是要<strong>保证在内核中并行执行工作的时间比在内核之间传输数据的时间长</strong>。</p>
+</blockquote>
+<p>在某个特定情况下是否应使用并行流的一些建议：</p>
+<ul>
+<li>考虑选择顺序流还是并行流时，首先应<strong>使用适当的基准来检查其性能</strong>。</li><li>应<strong>留意装箱成本</strong>，自动装箱和拆箱操作会大大降低性能。<blockquote>
+<p>原始类型流（IntStream、LongStream、 DoubleStream）可避免性能成本。</p>
+</blockquote>
+</li><li>有些操作在<strong>并行流上的性能比顺序流差</strong>。<blockquote>
+<p>特别是 limit 和 findFirst 等<strong>依赖于元素顺序的操作</strong>，它们在并行流上执行的代价非常大。</p>
+</blockquote>
+</li><li>需要考虑<strong>流的操作流水线的总计算成本</strong>。<blockquote>
+<p>设 N 是要处理的元素的总数，Q 是一个元素通过流水线的大致处理成本，则 N*Q 就是这个对成本的一个粗略的定性估计。</p>
+<blockquote>
+<p>Q 值较高就意味着使用并行流时性能好的可能性比较大。</p>
+</blockquote>
+</blockquote>
+</li><li>对于<strong>较小的数据量</strong>，并<strong>不适合并行流</strong>。</li><li>需要考虑<strong>流背后的数据结构是否易于分解</strong>。<blockquote>
+<p>ArrayList 的拆分效率比 LinkedList 高得多，因为前者用不着遍历就可以平均拆分，而后者则必须遍历。</p>
+<p>range 方法创建的原始类型流也可以快速分解。</p>
+</blockquote>
+</li><li>流自身的特点，以及流水线中的<strong>中间操作修改流的方式</strong>，都<strong>可能会改变分解过程的性能</strong>。<blockquote>
+<p>一个 SIZED 流可以分成大小相等的两部分，这样每个部分都可以比较高效地并行处理，但筛选操作可能丢弃的元素个数却无法预测，导致流本身的大小未知。</p>
+</blockquote>
+</li><li>需要考虑终端操作中<strong>合并步骤的代价</strong>是大是小。 </li></ul>
+<p><strong>流的数据源和可分解性</strong></p>
+<table>
+<thead>
+<tr>
+<th>源</th>
+<th>可分解性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ArrayList</td>
+<td>极佳</td>
+</tr>
+<tr>
+<td>LinkedList</td>
+<td>差</td>
+</tr>
+<tr>
+<td>IntStream.range</td>
+<td>极佳</td>
+</tr>
+<tr>
+<td>Stream.iterate</td>
+<td>差</td>
+</tr>
+<tr>
+<td>HashSet</td>
+<td>好</td>
+</tr>
+<tr>
+<td>TreeSet</td>
+<td>好</td>
+</tr>
+</tbody>
+</table>
+<h3 id="-">分支/合并框架</h3>
+<p>并行流背后使用的基础架构是<strong>分支/合并框架</strong>，该框架的目的是<strong>以递归方式将可以并行的任务拆分成更小的任务</strong>，然后<strong>将每个子任务的结果合并</strong>起来生成整体结果。</p>
+<blockquote>
+<p>它是 <strong>ExecutorService 接口</strong>的一个实现，它把子任务分配给线程池（ForkJoinPool）中的工作线程。</p>
+</blockquote>
+<p>要<strong>将任务提交到线程池</strong>，必须<strong>创建 RecursiveTask&lt;R&gt; 的一个子类</strong>，其中 <strong>R</strong> 是并行化任务（以及所有子任务）产生的<strong>结果类型</strong>。</p>
+<blockquote>
+<p>若任务不返回结果，则是 RecursiveAction 类型。</p>
+</blockquote>
+<p>要定义 RecursiveTask， 只需实现它唯一的抽象方法 <strong>compute</strong>：</p>
+<pre><code>protected abstract R compute();
+</code></pre><blockquote>
+<p>该方法同时<strong>定义了将任务拆分成子任务的逻辑</strong>，以及无法再拆分或不方便再拆分时，<strong>生成单个子任务结果的逻辑</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/rw3TTZA.png" alt=""></p>
+<blockquote>
+<p>这是<strong>分治算法的并行版本</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/pQ3rGNI.png" alt=""></p>
+<blockquote>
+<p>当把 ForkJoinSumCalculator 任务传给 ForkJoinPool 时，这个任务就<strong>由池中的一个线程执行</strong>，这个线程会<strong>调用任务的 compute 方法</strong>。</p>
+<blockquote>
+<p>该方法会检查任务<strong>是否小到足以顺序执行</strong>，如果不够小则会把要求和的数组分成两半，分给两个新的 ForkJoinSumCalculator，而它们也由 ForkJoinPool 安排执行。</p>
+<p>这一过程可以<strong>递归重复</strong>，把原任务<strong>分为更小的任务</strong>，直到满足不能再进一步拆分的条件。</p>
+</blockquote>
+<p>这时会<strong>顺序计算每个任务的结果</strong>，然后由分支过程创建的（隐含的）任务二叉树<strong>遍历回到它的根</strong>。接下来会合并每个子任务的部分结果，从而得到总任务的结果。</p>
+</blockquote>
+<p>有效使用分支/合并框架的最佳做法：</p>
+<ul>
+<li>对一个任务<strong>调用 join 方法会阻塞调用方</strong>，直到该任务做出结果。<blockquote>
+<p>应该在两个子任务的计算都开始后再调用它。</p>
+</blockquote>
+</li><li>应该始终<strong>直接调用 compute 或 fork 方法</strong>，只有<strong>顺序代码</strong>才应用 <strong>invoke 方法</strong>来启动并行计算。</li><li>对子任务<strong>调用 fork 方法</strong>可以把它<strong>排进 ForkJoinPool</strong>。<blockquote>
+<p>应该对其中一个子任务<strong>重用同一线程</strong>，这可避免在线程池中多分配一个任务造成的开销。</p>
+</blockquote>
+</li><li>调用 compute 的线程并不是概念上的调用方，后者是调用 fork 的那个。</li><li>应把<strong>输入/输出放在一个子任务</strong>里，<strong>计算放在另一个</strong>里，这样计算就可以和输入/输出同时进行。<blockquote>
+<p>任何其他 Java 代码一样，分支/合并框架<strong>需要“预热”</strong>或者说要执行几遍才<strong>会被 JIT 编译器优化</strong>。</p>
+<p>这就是为何在测量性能之前运行几次遍程序很重要。</p>
+</blockquote>
+</li></ul>
+<p><strong>分出大量的小任务</strong>一般来说都是一个好的选择。因为在理想情况下，划分并行任务时应该<strong>让每个任务都用完全相同的时间完成</strong>，让所有的 CPU 内核都同样繁忙。</p>
+<blockquote>
+<p>然而在实际中，每个子任务所花的时间可能天差地别，要么是因为划分策略效率低，要么是有不可预知的原因，比如磁盘访问慢，或是需要和外部服务协调执行。</p>
+</blockquote>
+<p>分支/合并框架工程用一种称为<strong>工作窃取</strong>（work stealing）的技术来解决这个问题。</p>
+<blockquote>
+<p>在实际应用中，这些任务差不多被<strong>平均分配到 ForkJoinPool 中的所有线程</strong>上。每个线程都为分配给它的任务保存一个<strong>双向链式队列</strong>，每完成一个任务，就会从队列头上取出下一个任务开始执行。</p>
+<p>若某个线程很早就完成了分配给它的所有任务，即它的<strong>队列已经为空</strong>，则它会<strong>随机选择一个别的线程</strong>，从队列的尾部上“偷走”一个任务。这个过程一直继续下去，直到所有的任务都执行完毕，所有的队列都清空。</p>
+<p>划成许多小任务而不是少数几个大任务有助于<strong>更好地在工作线程之间平衡负载</strong>。</p>
+</blockquote>
+<p>一般来说，这种<strong>工作窃取算法</strong>用于在池中的工作线程之间<strong>重新分配和平衡任务</strong>。<br><img src="https://i.imgur.com/04WUiXv.png" alt=""></p>
+<blockquote>
+<p>当工作线程队列中有一个任务被分成两个子任务时，一个子任务就被闲置的工作线程“偷走”了。</p>
+<p>这个过程可以不断递归，直到规定子任务应顺序执行的条件为真。</p>
+</blockquote>
+<h3 id="spliterator">Spliterator</h3>
+<p>Spliterator 表示<strong>可分迭代器</strong>（splitable iterator），它用于<strong>遍历数据源中的元素</strong>，但它是为了<strong>并行执行</strong>而设计的。</p>
+<p><strong>Spliterator 接口源码</strong>如下：</p>
+<pre><code>public interface Spliterator&lt;T&gt; {
+    boolean tryAdvance(Consumer&lt;? super T&gt; action);
+    Spliterator&lt;T&gt; trySplit();
+    long estimateSize();
+    int characteristics();
+}
+</code></pre><ul>
+<li><strong>T</strong> 是 Spliterator <strong>遍历的元素类型</strong>。</li><li><strong>tryAdvance 方法</strong><blockquote>
+<p>按序逐个使用 Spliterator 中的元素。</p>
+</blockquote>
+</li><li><strong>trySplit 方法</strong><blockquote>
+<p>可把一些元素划出去分给第二个 Spliterator（由该方法返回），让它们两个并行处理。</p>
+</blockquote>
+</li><li><strong>estimateSize 方法</strong><blockquote>
+<p>估计还剩下多少元素要遍历。</p>
+</blockquote>
+</li><li><strong>characteristics 方法</strong><blockquote>
+<p>声明 Spliterator 的特性。</p>
+</blockquote>
+</li></ul>
+<p>将 Stream 拆分成多个部分的算法是一个递归过程，<br><img src="https://i.imgur.com/pmWZkyg.png" alt=""></p>
+<blockquote>
+<p>第一步，对第一个 Spliterator <strong>调用 trySplit</strong>，生成第二个 Spliterator。</p>
+<p>第二步，对这两个 Spliterator <strong>调用 trysplit</strong>，此时共有四个 Spliterator。</p>
+<p>第三步，<strong>不断</strong>对 Spliterator <strong>调用 trySplit</strong>，直到它返回 null，表明此时它处理的数据结构不能再分割。</p>
+<p>第四步，<strong>递归拆分过程终止</strong>，所有的 Spliterator 在调用 trySplit 时都返回 null。</p>
+</blockquote>
+<p>这个拆分过程也<strong>受 Spliterator 本身的特性影响</strong>，其特性是通过 characteristics 方法声明。</p>
+<blockquote>
+<p>characteristics 方法将返回一个 int，<strong>代表 Spliterator 本身特性集的编码</strong>。</p>
+</blockquote>
+<p><strong>Spliterator 的特性</strong>如下：</p>
+<ul>
+<li><strong>ORDERED</strong><blockquote>
+<p>元素<strong>有既定的顺序</strong>（例如 List），Spliterator 在遍历和划分时也会遵循这一顺序。</p>
+</blockquote>
+</li><li><strong>DISTINCT</strong><blockquote>
+<p>对于任意一对遍历过的元素 x 和 y， x.equals(y) 返回 false。</p>
+</blockquote>
+</li><li><strong>SORTED</strong><blockquote>
+<p>遍历的元素按照一个<strong>预定义的顺序排序</strong>。</p>
+</blockquote>
+</li><li><strong>SIZED</strong><blockquote>
+<p>该 Spliterator 由一个<strong>已知大小的源建立</strong>（例如 Set），因此 estimatedSize() 返回的是准确值。</p>
+</blockquote>
+</li><li><strong>NONNULL</strong><blockquote>
+<p>保证遍历的元素<strong>不会为 null</strong>。</p>
+</blockquote>
+</li><li><strong>IMMUTABLE</strong><blockquote>
+<p>Spliterator 的<strong>数据源不能修改</strong>。这意味着在遍历时不能添加、删除或修改任何元素。</p>
+</blockquote>
+</li><li><strong>CONCURRENT</strong><blockquote>
+<p>该 Spliterator 的数据源可以被其他线程<strong>同时修改而无需同步</strong>。</p>
+</blockquote>
+</li><li><strong>SUBSIZED</strong><blockquote>
+<p>该 Spliterator 和所有从它拆分出来的 Spliterator 都是 SIZED。</p>
+</blockquote>
+</li></ul>
+<p>Spliterator 可以在第一次遍历、第一次拆分或第一次查询估计大小时绑定元素的数据源，而<strong>不是在创建时就绑定</strong>。</p>
+<blockquote>
+<p>此时它称为<strong>延迟绑定</strong>（late-binding）的 Spliterator。</p>
+</blockquote>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

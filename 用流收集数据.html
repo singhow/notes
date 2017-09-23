@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>用流收集数据</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<base href='file:\\\C:\Users\GJS\Dropbox\C.S\booknotes\Java 8 实战\'/>
+</head>
+<body>
+<h2 id="-">用流收集数据</h2>
+<h3 id="-">收集器简介</h3>
+<p>对流调用 <strong>collect 方法</strong>将对流中的元素触发一个<strong>归约操作</strong>（由 Collector 来参数化），它<strong>遍历</strong>流中的每个元素，并让 Collector 进行<strong>处理</strong>。<br><img src="https://i.imgur.com/MEWRDbZ.png" alt=""></p>
+<blockquote>
+<p>Collector 会对元素<strong>应用一个转换函数</strong>，并将结果累积在一个数据结构中，从而产生这一过程的最终输出。</p>
+<p>Collector 接口中方法的实现决定了<strong>如何对流执行归约操作</strong>。</p>
+<blockquote>
+<p>Collectors 实用类提供了很多静态工厂方法，可以方便地创建常见收集器的实例。</p>
+<p>最直接和最常用的收集器是 <strong>toList 静态方法</strong>，它会把流中所有的元素<strong>收集到一个 List 中</strong>。</p>
+</blockquote>
+</blockquote>
+<p><strong>预定义收集器</strong>，即那些可以从 Collectors 类提供的工厂方法创建的收集器，主要提供了三大功能：</p>
+<ul>
+<li><strong>将流元素归约和汇总为一个值</strong></li><li><strong>元素分组</strong></li><li><strong>元素分区</strong></li></ul>
+<h3 id="-">归约和汇总</h3>
+<p><strong>counting() 收集器</strong>可用来<strong>统计流中元素的数量</strong>。</p>
+<pre><code>long howManyDishes = menu.stream().collect(Collectors.counting());
+
+long howManyDishes = menu.stream().count();
+</code></pre><blockquote>
+<p>计算菜肴的数量。</p>
+</blockquote>
+<p><strong>maxBy 和 minBy 收集器</strong>接收一个 <strong>Comparator 参数</strong>来比较流中的元素，分别计算<strong>流中的最大或最小值</strong>。</p>
+<pre><code>Comparator&lt;Dish&gt; dishCaloriesComparator =
+    Comparator.comparingInt(Dish::getCalories);
+
+Optional&lt;Dish&gt; mostCalorieDish =
+    menu.stream().collect(maxBy(dishCaloriesComparator));
+</code></pre><blockquote>
+<p>返回热量最大的菜肴。</p>
+</blockquote>
+<p>另一个常见的<strong>返回单个值的归约操作</strong>是对流中对象的一个数值字段求和，即<strong>汇总操作</strong>。</p>
+<blockquote>
+<p><strong>summingInt 方法</strong>接受一个<strong>把对象映射为求和所需 int 的函数</strong>，并返回一个收集器。</p>
+<blockquote>
+<p>该收集器在传递给普通的 collect 方法后即执行汇总操作。</p>
+</blockquote>
+<p><strong>summingLong</strong> 和 <strong>summingDouble</strong> 方法用于求和字段为 long 或 double 的情况。</p>
+</blockquote>
+<pre><code>int totalCalories = menu.stream().collect(summingInt(Dish::getCalories));
+</code></pre><blockquote>
+<p>计算菜单列表的总热量。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/nbnnhJ3.png" alt=""></p>
+<p>汇总操作还包括<strong>计算数值的平均数</strong>，即 <strong>averagingInt</strong>、<strong>averagingLong</strong> 和 <strong>averagingDouble</strong> 方法。</p>
+<pre><code>double avgCalories = menu.stream().collect(averagingInt(Dish::getCalories));
+</code></pre><p><strong>summarizingInt 方法</strong>可返回流中<strong>元素的个数</strong>、<strong>元素的总和</strong>、<strong>平均值</strong>、<strong>最大值</strong>和<strong>最小值</strong>等，这些信息被<strong>收集到 IntSummaryStatistics 类</strong>，它提供了 <strong>getter 方法</strong>来访问结果。</p>
+<pre><code>IntSummaryStatistics menuStatistics =
+    menu.stream().collect(summarizingInt(Dish::getCalories));
+</code></pre><blockquote>
+<p>对于 long 和 double 类型，也有相应的方法和类。</p>
+</blockquote>
+<p><strong>joining 方法</strong>返回的收集器会把对流中每一个对象<strong>应用 toString 方法</strong>得到的所有字符串<strong>连接成一个字符串</strong>。</p>
+<pre><code>String shortMenu = menu.stream().map(Dish::getName).collect(joining());
+</code></pre><blockquote>
+<p>joining 在内部使用了 <strong>StringBuilder</strong> 来把生成的字符串<strong>逐个追加</strong>起来。</p>
+<p>若 Dish 类有一个 toString 方法来返回菜肴的名称，则无需使用 getName() 方法。</p>
+</blockquote>
+<p>joining 方法还有一个重载版本可以<strong>接受元素之间的分界符</strong>。</p>
+<pre><code>String shortMenu = menu.stream().map(Dish::getName).collect(joining(&quot;, &quot;));
+</code></pre><p>收集器是一个用 <strong>reducing 方法定义的归约过程</strong>的特殊情况，reducing 方法是所有这些特殊情况的一般化。</p>
+<pre><code>int totalCalories = menu.stream().collect(
+    reducing(0, Dish::getCalories, (i, j) -&gt; i + j));
+</code></pre><blockquote>
+<p>第一个参数是<strong>归约操作的起始值</strong>，也是流中没有元素时的返回值</p>
+<p>第二个参数是一个<strong>类型值</strong></p>
+<p>第三个参数是一个 <strong>BinaryOperator</strong>，用来将两个项目<strong>累积成一个同类型的值</strong></p>
+</blockquote>
+<p>归约操作的原理如下图所示，<strong>利用累积函数</strong>，把一个初始化为起始值的累加器，和把转换函数应用到流中每个元素上得到的结果<strong>不断迭代合并起来</strong>。<br><img src="https://i.imgur.com/7ALn2sG.png" alt=""></p>
+<p>也可使用<strong>单参数形式的 reducing</strong> 来找到流中的<strong>最大值或计算总值</strong>。</p>
+<pre><code>Optional&lt;Dish&gt; mostCalorieDish = menu.stream().collect(
+    reducing((d1, d2) -&gt; d1.getCalories() &gt; d2.getCalories() ? d1 : d2));
+
+int totalCalories =
+    menu.stream().map(Dish::getCalories).reduce(Integer::sum).get();
+</code></pre><blockquote>
+<p>将流中的<strong>第一个项目作为起点</strong>，把<strong>恒等函数</strong>（即一个函数仅仅是返回其输入参数）<strong>作为一个转换函数</strong>。</p>
+<p>reduce(Integer::sum) <strong>返回 Optional&lt;Integer&gt;</strong>，以便在空流的情况下安全地执行归约操作。</p>
+<blockquote>
+<p>一般来说，使用允许提供默认值的方法，如 orElse 或 orElseGet 来解开 Optional 中包含的值更为安全。</p>
+</blockquote>
+</blockquote>
+<p>使用 <strong>reduce 方法</strong>来<strong>实现 toListCollector</strong>：</p>
+<pre><code>Stream&lt;Integer&gt; stream = Arrays.asList(1, 2, 3, 4, 5, 6).stream();
+List&lt;Integer&gt; numbers = stream.reduce(
+    new ArrayList&lt;Integer&gt;(),
+    (List&lt;Integer&gt; l, Integer e) -&gt;
+        { l.add(e);
+          return l;
+        },
+    (List&lt;Integer&gt; l1, List&lt;Integer&gt; l2) -&gt; {
+        l1.addAll(l2);
+        return l1; }
+    );
+</code></pre><ul>
+<li>Stream 接口的 collect 和 reduce 方法的区别有<strong>语义问题</strong>和<strong>实际问题</strong>两方面：<blockquote>
+<p>语义问题在于</p>
+<blockquote>
+<p><strong>reduce 方法</strong>旨在把两个值结合起来<strong>生成一个新值</strong>，它是一个<strong>不可变的归约</strong>。</p>
+<p><strong>collect 方法</strong>的设计则是要<strong>改变容器</strong>，从而<strong>累积要输出的结果</strong>。</p>
+</blockquote>
+<p>以错误的语义使用 reduce 方法还会造成一个实际问题：</p>
+<blockquote>
+<p>这个归约过程<strong>不能并行工作</strong>，因为由多个线程并发修改同一个数据结构可能会破坏 List 本身。</p>
+<p>若想要<strong>线程安全</strong>，就需要<strong>每次分配一个新的 List</strong>，而对象分配又会影响性能。这就是 collect 方法特别适合表达可变容器上的归约的原因，更关键的是它适合并行操作。</p>
+</blockquote>
+</blockquote>
+</li></ul>
+<p><strong>函数式编程</strong>通常提供了多种方法来执行同一个操作。</p>
+<blockquote>
+<p>收集器在某种程度上比 Stream 接口上直接提供的方法用起来更复杂，但好处在于它们能<strong>提供更高水平的抽象和概括</strong>，也<strong>更容易重用和自定义</strong>。</p>
+</blockquote>
+<h3 id="-">分组</h3>
+<p><strong>groupingBy 方法</strong>可用于对流中的元素<strong>进行分组</strong>。</p>
+<pre><code>Map&lt;Dish.Type, List&lt;Dish&gt;&gt; dishesByType =
+    menu.stream().collect(groupingBy(Dish::getType));
+</code></pre><blockquote>
+<p>向 groupingBy 方法<strong>传递一个 Function</strong>（以方法引用的形式），它提取流中每一道 Dish 的 Dish.Type。</p>
+<p>这个 Function 叫作<strong>分类函数</strong>，用来把流中的元素分成不同的组。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/t21Vc1W.png" alt=""></p>
+<p><strong>双参数版本的 groupingBy 方法</strong>可用于实现<strong>多级分组</strong>，它除了普通的分类函数外，还可以<strong>接受 collector 类型的第二个参数</strong>。</p>
+<blockquote>
+<p>若要进行二级分组，可以把一个<strong>内层 groupingBy 传递给外层 groupingBy</strong>，并定义一个为流中项目分类的二级标准。</p>
+<p>这种多级分组操作可以扩展至任意层级，<strong>n 级分组</strong>就会得到一个代表 n 级树形结构的 <strong>n 级 Map</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/Mb3nc8f.png" alt=""></p>
+<p><strong>collectingAndThen 方法</strong>可将收集器返回的结果<strong>转换为另一种类型</strong>，它接受两个参数——<strong>要转换的收集器</strong>和<strong>转换函数</strong>，并<strong>返回另一个收集器</strong>。</p>
+<blockquote>
+<p>返回的收集器相当于<strong>旧收集器的一个包装</strong>，collect 操作的最后一步就是<strong>将返回的值用转换函数做一个映射</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/ecyA3uZ.png" alt=""></p>
+<blockquote>
+<p>收集器用虚线表示，因此 groupingBy 是最外层，根据菜肴的类型把菜单流分组，得到<strong>三个子流</strong>。</p>
+<p>groupingBy 收集器<strong>包裹着 collectingAndThen 收集器</strong>，因此分组操作得到的每个子流都用这第二个收集器做<strong>进一步归约</strong>。</p>
+<p>collectingAndThen 收集器又<strong>包裹着第三个收集器 maxBy</strong>。</p>
+<p>随后由归约收集器进行子流的归约操作，然后包含它的 collectingAndThen 收集器会<strong>对其结果应用 Optional:get 转换函数</strong>。</p>
+<p>对三个子流分别执行这一过程并转换而<strong>得到的三个值</strong>，也就是各个类型中热量最高的 Dish，将成为 groupingBy 收集器返回的 Map 中与各个分类键（Dish 的类型）相关联的值。</p>
+</blockquote>
+<p>一般来说，通过 groupingBy 方法的第二个参数传递的收集器将会对<strong>分到同一组中的所有流元素执行进一步归约操作</strong>。常和 groupingBy 联合使用的另一个收集器是由 mapping 方法生成的。<strong>mapping 方法</strong>接受两个参数：</p>
+<ul>
+<li><strong>一个函数对流中的元素做变换</strong></li><li><strong>另一个则将变换的结果对象收集起来</strong></li></ul>
+<p>mapping 方法的目的是<strong>在累加之前对每个输入元素应用一个映射函数</strong>，这样就可以<strong>让接受特定类型元素的收集器适应不同类型的对象</strong>。</p>
+<h3 id="-">分区</h3>
+<p><strong>分区</strong>是分组的特殊情况，由 <strong>partitioningBy 方法</strong>实现。该方法<strong>由一个谓词作为分类函数</strong>，它称分区函数。</p>
+<blockquote>
+<p><strong>分区函数</strong>返回一个布尔值，即得到的分组 Map 的<strong>键类型是 Boolean</strong>。</p>
+<blockquote>
+<p>它最多<strong>可分为两组</strong>：true 是一组， false 是一组。</p>
+</blockquote>
+<p>分区的好处在于保留了分区函数返回 true 或 false 的两套流元素列表。    </p>
+</blockquote>
+<p><strong>Collectors 类的静态工厂方法</strong></p>
+<table>
+<thead>
+<tr>
+<th>工厂方法</th>
+<th>返回类型</th>
+<th>用 于</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>toList</td>
+<td>List&lt;T&gt;</td>
+<td>把流中所有项目收集到一个 List</td>
+</tr>
+<tr>
+<td>toSet</td>
+<td>Set&lt;T&gt;</td>
+<td>把流中所有项目收集到一个 Set，删除重复项</td>
+</tr>
+<tr>
+<td>toCollection</td>
+<td>Collection&lt;T&gt;</td>
+<td>把流中所有项目收集到给定的供应源创建的集合</td>
+</tr>
+<tr>
+<td>counting</td>
+<td>Long</td>
+<td>计算流中元素的个数</td>
+</tr>
+<tr>
+<td>summingInt</td>
+<td>Integer</td>
+<td>对流中项目的一个整数属性求和</td>
+</tr>
+<tr>
+<td>averagingInt</td>
+<td>Double</td>
+<td>计算流中项目 Integer 属性的平均值</td>
+</tr>
+<tr>
+<td>summarizingInt</td>
+<td>IntSummaryStatistics</td>
+<td>收集关于流中项目 Integer 属性的统计值，例如最大、最小、总和与平均值</td>
+</tr>
+<tr>
+<td>joining</td>
+<td>String</td>
+<td>连接对流中每个项目调用 toString 方法所生成的字符串</td>
+</tr>
+<tr>
+<td>maxBy</td>
+<td>Optional&lt;T&gt;</td>
+<td>一个包裹了流中按照给定比较器选出的最大元素的 Optional，或如果流为空则为 Optional.empty()</td>
+</tr>
+<tr>
+<td>minBy</td>
+<td>Optional&lt;T&gt;</td>
+<td>一个包裹了流中按照给定比较器选出的最小元素的 Optional，或如果流为空则为 Optional.empty()</td>
+</tr>
+<tr>
+<td>reducing</td>
+<td>归约操作产生的类型</td>
+<td>从一个作为累加器的初始值开始，利用 BinaryOperator 与流中的元素逐个结合，从而将流归约为单个值</td>
+</tr>
+<tr>
+<td>collectingAndThen</td>
+<td>转换函数返回的类型</td>
+<td>包裹另一个收集器，对其结果应用转换函数</td>
+</tr>
+<tr>
+<td>groupingBy</td>
+<td>Map&lt;K, List&lt;T&gt;&gt;</td>
+<td>根据项目的一个属性的值对流中的项目作问组，并将属性值作为结果 Map 的键</td>
+</tr>
+<tr>
+<td>partitioningBy</td>
+<td>Map&lt;Boolean,List&lt;T&gt;&gt;</td>
+<td>根据对流中每个项目应用谓词的结果来对项目进行分区</td>
+</tr>
+</tbody>
+</table>
+<p><strong>静态工厂方法使用实例</strong>：</p>
+<pre><code>List&lt;Dish&gt; dishes = menuStream.collect(toList());
+Set&lt;Dish&gt; dishes = menuStream.collect(toSet());
+Collection&lt;Dish&gt; dishes = menuStream.collect(toCollection(), ArrayList::new);
+long howManyDishes = menuStream.collect(counting());
+int totalCalories = menuStream.collect(summingInt(Dish::getCalories));
+double avgCalories = menuStream.collect(averagingInt(Dish::getCalories));
+IntSummaryStatistics menuStatistics = menuStream.collect(summarizingInt(Dish::getCalories));
+String shortMenu = menuStream.map(Dish::getName).collect(joining(&quot;, &quot;));
+Optional&lt;Dish&gt; fattest = menuStream.collect(maxBy(comparingInt(Dish::getCalories)));
+Optional&lt;Dish&gt; lightest = menuStream.collect(minBy(comparingInt(Dish::getCalories)));
+int totalCalories = menuStream.collect(reducing(0, Dish::getCalories, Integer::sum));
+int howManyDishes = menuStream.collect(collectingAndThen(toList(), List::size));
+Map&lt;Dish.Type,List&lt;Dish&gt;&gt; dishesByType = menuStream.collect(groupingBy(Dish::getType));
+Map&lt;Boolean,List&lt;Dish&gt;&gt; vegetarianDishes = menuStream.collect(partitioningBy(Dish::isVegetarian));
+</code></pre><h3 id="-">收集器接口</h3>
+<p><strong>Collector 接口</strong>包含了一系列方法，为实现具体的归约操作（即收集器）提供了范本。它的定义如下：</p>
+<pre><code>public interface Collector&lt;T, A, R&gt; {
+    Supplier&lt;A&gt; supplier();
+    BiConsumer&lt;A, T&gt; accumulator();
+    Function&lt;A, R&gt; finisher();
+    BinaryOperator&lt;A&gt; combiner();
+    Set&lt;Characteristics&gt; characteristics();
+}
+</code></pre><ul>
+<li>T 是流中<strong>要收集的项目的泛型</strong></li><li>A 是<strong>累加器的类型</strong><blockquote>
+<p>累加器是在收集过程中用于累积部分结果的对象。</p>
+</blockquote>
+</li><li>R 是<strong>收集操作得到的对象</strong>（通常但并不一定是集合）<strong>的类型</strong></li></ul>
+<p>Collector 接口的前四个方法都会返回一个<strong>被 collect 方法调用的函数</strong>。</p>
+<blockquote>
+<p>第五个方法 characteristics 则提供了一系列特征，即一个<strong>提示列表</strong>，告诉 collect 方法<strong>在执行归约操作的时候可以应用哪些优化</strong>。</p>
+</blockquote>
+<p><strong>supplier 方法</strong>用于<strong>建立新的结果容器</strong>，它必须<strong>返回一个结果为空的 Supplier</strong>。调用它时会<strong>创建一个空的累加器实例</strong>，供数据收集过程使用。</p>
+<pre><code>public Supplier&lt;List&lt;T&gt;&gt; supplier() {
+    return () -&gt; new ArrayList&lt;T&gt;();
+}
+</code></pre><blockquote>
+<p>toList 的实现。</p>
+</blockquote>
+<p><strong>accumulator 方法</strong>用于<strong>将元素添加到结果容器</strong>，它返回<strong>执行归约操作的函数</strong>。</p>
+<pre><code>public BiConsumer&lt;List&lt;T&gt;, T&gt; accumulator() {
+    return (list, item) -&gt; list.add(item);
+}
+</code></pre><blockquote>
+<p>toList 的实现。</p>
+<p>当遍历到流中第 n 个元素时，这个函数执行时会有两个参数：</p>
+<blockquote>
+<p><strong>保存归约结果的累加器</strong>（已收集了流中的前 n-1 个项目）</p>
+<p><strong>第 n 个元素本身</strong></p>
+</blockquote>
+<p>该执行归约的函数<strong>返回 void</strong>，因为累加器是<strong>原位更新</strong>，即函数的执行<strong>改变其内部状态以体现遍历的元素的效果</strong>。 </p>
+</blockquote>
+<p><strong>finisher 方法</strong>对结果容器<strong>应用最终转换</strong>，它返回在累积过程的<strong>最后要调用的一个函数</strong>，以便将累加器对象<strong>转换为整个集合操作</strong>的最终结果。</p>
+<pre><code>public Function&lt;List&lt;T&gt;, List&lt;T&gt;&gt; finisher() {
+    return Function.identity();
+}
+</code></pre><blockquote>
+<p>toList 的实现。</p>
+<p>通常情况下，累加器对象恰好符合预期的最终结果，因此无需转换。因此只需返回 identity 函数。</p>
+</blockquote>
+<p>前述三个方法已经足以<strong>对流进行顺序归约</strong>，从逻辑上看可按下图进行。但在实践中的实现细节可能还要复杂一些，一方面是因为<strong>流的延迟性质</strong>，可能在 collect 操作之前还需要完成其他中间操作的流水线；另一方面则是理论上<strong>可能要进行并行归约</strong>。<br><img src="https://i.imgur.com/CnI03nB.png" alt=""></p>
+<p><strong>combiner 方法</strong>用于<strong>合并两个结果容器</strong>，它返回一个<strong>供归约操作使用的函数</strong>。该方法定义了对流的各个子部分进行并行处理时，各个子部分归约所得的累加器要如何合并。</p>
+<pre><code>public BinaryOperator&lt;List&lt;T&gt;&gt; combiner() {
+    return (list1, list2) -&gt; {
+        list1.addAll(list2);
+        return list1; }
+}
+</code></pre><blockquote>
+<p>toList 的实现。</p>
+</blockquote>
+<p>有了前述四个方法，就可<strong>对流进行并行归约</strong>了。它会用到<strong>分支/合并框架</strong>和 <strong>Spliterator 抽象</strong>，整个过程如下图所示：<br><img src="https://i.imgur.com/qHcoH0z.png" alt=""></p>
+<blockquote>
+<p>原始流会<strong>以递归方式拆分为子流</strong>，直到定义流是否需要进一步拆分的一个条件为非。</p>
+<blockquote>
+<p>若分布式工作单位太小，并行计算往往比顺序计算要慢，而且要是生成的并行任务比处理器内核数多很多就毫无意义了。</p>
+</blockquote>
+<p>现在，所有的子流都可以并行处理，即<strong>对每个子流应用顺序归约算法</strong>。</p>
+<p>最后，使用收集器 combiner 方法返回的函数，<strong>将所有的部分结果两两合并</strong>。</p>
+<blockquote>
+<p>这时会把原始流每次拆分时得到的子流对应的结果合并起来。</p>
+</blockquote>
+</blockquote>
+<p><strong>characteristics 方法</strong>会返回一个<strong>不可变的 Characteristics 集合</strong>，它定义了收集器的行为——尤其是关于流是否可以并行归约，以及可以使用哪些优化的提示。<strong>Characteristics</strong> 是一个包含三个项目的<strong>枚举</strong>：</p>
+<ul>
+<li><strong>UNORDERED</strong><blockquote>
+<p>归约结果不受流中项目的遍历和累积顺序的影响。</p>
+</blockquote>
+</li><li><strong>CONCURRENT</strong><blockquote>
+<p>accumulator 函数可以从多个线程同时调用，且该收集器可以并行归约流。</p>
+<p>若收集器没有标为 UNORDERED，那它仅在用于无序数据源时才可以并行归约。</p>
+</blockquote>
+</li><li><strong>IDENTITY_FINISH</strong><blockquote>
+<p>表明 finisher 方法返回的函数是一个恒等函数，可以跳过。</p>
+<blockquote>
+<p>这种情况下，累加器对象将会直接用作归约过程的最终结果。即将累加器 A 不加检查地转换为结果 R 是安全的。</p>
+</blockquote>
+</blockquote>
+</li></ul>
+<p>Stream 有一个<strong>重载的 collect 方法</strong>可以接受另外三个函数——supplier、accumulator 和 combiner，其语义和 Collector 接口的相应方法返回的函数完全相同。</p>
+<pre><code>List&lt;Dish&gt; dishes = menuStream.collect(
+    ArrayList::new,
+    List::add,
+    List::addAll);
+</code></pre><blockquote>
+<p>三个参数分别表示<strong>供应源</strong>、<strong>累加器</strong>和<strong>组合器</strong>。</p>
+<p>此版本的 collect 方法<strong>不能传递任何 Characteristics</strong>，它是一个 IDENTITY_FINISH 和<br> CONCURRENT 但并非 UNORDERED 的收集器。</p>
+</blockquote>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

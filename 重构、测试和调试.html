@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>重构、测试和调试</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+<style type="text/css">
+.highlight  { background: #ffffff; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { font-weight: bold } /* Keyword */
+.highlight .o { font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .gd .x { color: #000000; background-color: #ffaaaa } /* Generic.Deleted.Specific */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .gi .x { color: #000000; background-color: #aaffaa } /* Generic.Inserted.Specific */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { font-weight: bold } /* Keyword.Constant */
+.highlight .kd { font-weight: bold } /* Keyword.Declaration */
+.highlight .kp { font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d14 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d14 } /* Literal.String.Backtick */
+.highlight .sc { color: #d14 } /* Literal.String.Char */
+.highlight .sd { color: #d14 } /* Literal.String.Doc */
+.highlight .s2 { color: #d14 } /* Literal.String.Double */
+.highlight .se { color: #d14 } /* Literal.String.Escape */
+.highlight .sh { color: #d14 } /* Literal.String.Heredoc */
+.highlight .si { color: #d14 } /* Literal.String.Interpol */
+.highlight .sx { color: #d14 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d14 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+.pl-c {
+    color: #969896;
+}
+
+.pl-c1,.pl-mdh,.pl-mm,.pl-mp,.pl-mr,.pl-s1 .pl-v,.pl-s3,.pl-sc,.pl-sv {
+    color: #0086b3;
+}
+
+.pl-e,.pl-en {
+    color: #795da3;
+}
+
+.pl-s1 .pl-s2,.pl-smi,.pl-smp,.pl-stj,.pl-vo,.pl-vpf {
+    color: #333;
+}
+
+.pl-ent {
+    color: #63a35c;
+}
+
+.pl-k,.pl-s,.pl-st {
+    color: #a71d5d;
+}
+
+.pl-pds,.pl-s1,.pl-s1 .pl-pse .pl-s2,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre,.pl-src,.pl-v {
+    color: #df5000;
+}
+
+.pl-id {
+    color: #b52a1d;
+}
+
+.pl-ii {
+    background-color: #b52a1d;
+    color: #f8f8f8;
+}
+
+.pl-sr .pl-cce {
+    color: #63a35c;
+    font-weight: bold;
+}
+
+.pl-ml {
+    color: #693a17;
+}
+
+.pl-mh,.pl-mh .pl-en,.pl-ms {
+    color: #1d3e81;
+    font-weight: bold;
+}
+
+.pl-mq {
+    color: #008080;
+}
+
+.pl-mi {
+    color: #333;
+    font-style: italic;
+}
+
+.pl-mb {
+    color: #333;
+    font-weight: bold;
+}
+
+.pl-md,.pl-mdhf {
+    background-color: #ffecec;
+    color: #bd2c00;
+}
+
+.pl-mdht,.pl-mi1 {
+    background-color: #eaffea;
+    color: #55a532;
+}
+
+.pl-mdr {
+    color: #795da3;
+    font-weight: bold;
+}
+
+.pl-mo {
+    color: #1d3e81;
+}
+.task-list {
+padding-left:10px;
+margin-bottom:0;
+}
+
+.task-list li {
+    margin-left: 20px;
+}
+
+.task-list-item {
+list-style-type:none;
+padding-left:10px;
+}
+
+.task-list-item label {
+font-weight:400;
+}
+
+.task-list-item.enabled label {
+cursor:pointer;
+}
+
+.task-list-item+.task-list-item {
+margin-top:3px;
+}
+
+.task-list-item-checkbox {
+display:inline-block;
+margin-left:-20px;
+margin-right:3px;
+vertical-align:1px;
+}
+</style>
+<base href='file:\\\C:\Users\GJS\Dropbox\C.S\booknotes\Java 8 实战\'/>
+</head>
+<body>
+<h2 id="-">重构、测试和调试</h2>
+<h3 id="-">为改善可读性和灵活性重构代码</h3>
+<p>有<strong>三种重构的方法</strong>可改善程序代码的可读性：</p>
+<ul>
+<li><strong>Lambda 表达式取代匿名类</strong></li><li><strong>方法引用重构 Lambda 表达式</strong></li><li><strong>Stream API 重构命令式的数据处理</strong></li></ul>
+<pre><code>Runnable r1 = new Runnable() {
+    public void run() {
+        System.out.println(&quot;Hello&quot;);
+    }
+};
+
+Runnable r2 = () -&gt; System.out.println(&quot;Hello&quot;);
+</code></pre><blockquote>
+<p>使用匿名类和使用 Lambda 表达式。</p>
+</blockquote>
+<p>某些情况下，将匿名类转换为 Lambda 表达式可能是一个比较复杂的过程。</p>
+<ul>
+<li>首先，<strong>匿名类和 Lambda 表达式中的 this 和 super 的含义是不同的</strong>。<blockquote>
+<p>匿名类中，this 代表的是类自身；在 Lambda 中，它代表的是包含类。</p>
+</blockquote>
+</li><li>其次，<strong>匿名类可以屏蔽包含类的变量，而 Lambda 表达式不能</strong>。</li><li>最后，<strong>在涉及重载的上下文里，将匿名类转换为 Lambda 表达式可能使最终的代码更加晦涩</strong>。</li></ul>
+<pre><code>int a = 10;
+
+Runnable r1 = new Runnable() {
+    public void run() {
+        int a = 2;
+        System.out.println(&quot;Hello&quot;);
+    }
+};
+
+Runnable r2 = () -&gt; {
+    int a = 2;
+    System.out.println(&quot;Hello&quot;);
+};
+</code></pre><blockquote>
+<p>Lambda 表达式<strong>编译错误</strong>，匿名内部类则一切正常。</p>
+</blockquote>
+<pre><code>interface Task {
+    public void execute();
+}
+
+public static void doSomething(Runnable r) { r.run(); }
+public static void doSomething(Task a) { a.execute(); }
+
+doSomething(new Task() {
+    public void execute() {
+        System.out.println(&quot;Danger danger!!&quot;);
+    }
+});
+
+doSomething(() -&gt; System.out.println(&quot;Danger danger!!&quot;));
+
+doSomething((Task)() -&gt; System.out.println(&quot;Danger danger!!&quot;));
+</code></pre><blockquote>
+<p>Task 与 Runnable 使用了<strong>同样的签名声明</strong>。</p>
+<p>传递一个匿名实现的 Task 不会遇到任何问题。</p>
+<p>传递一个 Lambda 表达式时会导致一种<strong>晦涩的方法调用</strong>，因为 Task 和 Runnable <strong>都是合法的目标类型</strong>。</p>
+<p>可以尝试<strong>对 Task 使用显式类型转换</strong>来解决这种模棱两可的情况。</p>
+</blockquote>
+<p>虽然 Lambda 表达式非常<strong>适用于需要传递代码片段的场景</strong>，但为了代码的可读性，应<strong>尽量使用方法引用</strong>。</p>
+<blockquote>
+<p>可以将 Lambda 表达式的内容<strong>抽取到一个单独的方法中</strong>，将其<strong>作为参数传递</strong>给指定的方法。</p>
+<p>还应尽量考虑<strong>使用静态辅助方法</strong>，这些方法在设计时就考虑了会<strong>结合方法引用</strong>一起使用。</p>
+<blockquote>
+<p>很多通用的归约操作，比如 sum、 maximum，都有内建的辅助方法可以和方法引用结合使用。</p>
+</blockquote>
+</blockquote>
+<pre><code>int totalCalories =
+    menu.stream().map(Dish::getCalories)
+    .reduce(0, (c1, c2) -&gt; c1 + c2);
+
+int totalCalories = menu.stream().collect(summingInt(Dish::getCalories));
+</code></pre><blockquote>
+<p>可使用 <strong>summingInt 方法</strong>来<strong>完成归约操作</strong>。</p>
+</blockquote>
+<p>应将所有<strong>使用迭代器处理集合</strong>的代码都<strong>转换成 Stream API</strong> 的方式，因为 Stream API 能<strong>更清晰地表达数据处理管道</strong>的意图。</p>
+<blockquote>
+<p>此外通过<strong>短路</strong>和<strong>延迟载入</strong>以及<strong>现代计算机的多核架构</strong>，还可以<strong>对 Stream 进行优化</strong>。</p>
+</blockquote>
+<p>以下代码分别使用迭代器和 Stream API 来实现<strong>筛选和抽取</strong>。</p>
+<pre><code>List&lt;String&gt; dishNames = new ArrayList&lt;&gt;();
+for(Dish dish: menu) {
+    if(dish.getCalories() &gt; 300) {
+        dishNames.add(dish.getName());
+    }
+}
+
+menu.parallelStream()
+    .filter(d -&gt; d.getCalories() &gt; 300)
+    .map(Dish::getName)
+    .collect(toList());
+</code></pre><blockquote>
+<p>将命令式的代码结构转换为 Stream API 的形式是个困难的任务，因为你<strong>需要考虑控制流语句</strong>，比如 break、 continue、 return，并选择<strong>使用恰当的流操作</strong>。</p>
+</blockquote>
+<p>Lambda 表达式<strong>有利于行为参数化</strong>，可以使用<strong>不同的 Lambda 表示不同的行为</strong>，并将它们<strong>作为参数传递给函数</strong>去处理执行。</p>
+<blockquote>
+<p>例如，可以用多种方式为 Predicate 创建筛选条件，或者使用 Comparator 对多种对象进行比较。</p>
+</blockquote>
+<p>要使用 Lambda 表达式，必须首先在代码中<strong>定义函数接口</strong>。通常有两种定义模式：</p>
+<ul>
+<li><strong>有条件的延迟执行</strong><blockquote>
+<p>若频繁地从客户端代码查询一个对象的状态只是为了传递参数、调用该对象的一个方法，那么可以考虑实现一个新的方法，以 Lambda 或者方法表达式作为参数，新方法在<strong>检查完该对象的状态之后才调用原来的方法</strong>。</p>
+</blockquote>
+</li><li><strong>环绕执行</strong><blockquote>
+<p>若业务代码千差万别，但是它们<strong>拥有同样的准备和清理阶段</strong>，这时可以将这部分业务代码用 Lambda 实现。</p>
+<blockquote>
+<p>这样可以重用准备和清理阶段的逻辑，减少重复冗余的代码。</p>
+</blockquote>
+</blockquote>
+</li></ul>
+<h3 id="-lambda-">使用 Lambda 重构面向对象的设计模式</h3>
+<p>新的语言特性常常让现存的编程模式或设计黯然失色：</p>
+<blockquote>
+<p>Java 5 中引入的 <strong>for-each</strong> 替代了很多显式使用迭代器的情形。</p>
+<p>Java 7 中推出的<strong>菱形操作符</strong>（&lt;&gt;）使得创建实例时无需显式使用泛型。</p>
+<p>Java 8 中引入 <strong>Lambda 表达式</strong>为解决传统设计模式所面对的问题提供了新的解决方案，采用这些方案往往更高效、更简单。</p>
+</blockquote>
+<p><strong>策略模式</strong>代表了解决一类算法的通用解决方案，用户可在运行时选择使用哪种方案。它包含三部分内容：</p>
+<ul>
+<li>一个代表某个算法的接口</li><li>一个或多个该接口的具体实现，它们代表了算法的多种实现</li><li>一个或多个使用策略对象的客户</li></ul>
+<p><img src="https://i.imgur.com/tv4gGUs.png" alt=""></p>
+<p>若代表某个算法的接口是一个函数接口，那么可通过直接传递 Lambda 表达式来替代策略模式。</p>
+<p>若需要采用某个算法的框架，同时又希望有一定的灵活度，能对它的某些部分进行改进，那么采用<strong>模板方法设计模式</strong>是比较通用的方案。</p>
+<blockquote>
+<p>即模板方法模式在用户“希望使用这个算法，但是需要对其中的某些行进行改进，才能达到希望的效果”时是非常有用的。</p>
+</blockquote>
+<p>Lambda 表达式可通过创建算法框架，让具体的实现插入某些部分来替换模板方法模式。</p>
+<p>某些事件发生时（比如状态转变），若一个对象（通常我们称之为主题）需要自动地通知其他多个对象（称为观察者），则应使用<strong>观察者模式</strong>。<br><img src="https://i.imgur.com/SklAmPQ.png" alt=""></p>
+<p><strong>责任链模式</strong>是一种创建处理对象序列（比如操作序列）的通用方案。一个处理对象可能需要在完成一些工作之后，将结果传递给另一个对象，这个对象接着做一些工作，再转交给下一个处理对象，以此类推。</p>
+<blockquote>
+<p>这种模式是通过定义一个代表处理对象的抽象类来实现的，在抽象类中会定义一个字段来记录后续对象。</p>
+<p>一旦对象完成它的工作，处理对象就会将它的工作转交给它的后继。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/S2Gic7g.png" alt=""></p>
+<p><strong>工厂模式</strong>无需向客户暴露实例化的逻辑就能完成对象的创建。</p>
+<h3 id="-lambda-">测试 Lambda 表达式</h3>
+<p>Lambda 并<strong>无函数名</strong>，因此要对代码中的 Lambda 函数进行测试实际上比较困难。</p>
+<ul>
+<li>有时可以<strong>借助某个字段访问 Lambda 函数</strong>，此时通过这些字段<strong>对封装在 Lambda 函数内的逻辑进行测试</strong>。</li></ul>
+<p>使用 Lambda 的初衷是<strong>将一部分逻辑封装起来给另一个方法使用</strong>，因此<strong>不应将 Lambda 表达式声明为 public</strong>，它们仅是具体的实现细节。</p>
+<blockquote>
+<p>相反，应该<strong>对使用 Lambda 表达式的方法进行测试</strong>。</p>
+</blockquote>
+<p>对于包含大量业务逻辑，非常复杂的 Lambda 表达式，无法在测试程序中引用 Lambda 表达式。</p>
+<blockquote>
+<p>此时应<strong>将 Lambda 表达式转换为方法引用</strong>（往往需要声明一个新的常规方法）</p>
+</blockquote>
+<p>接受函数作为参数的方法或者返回一个函数的方法（即高阶函数，higher-order function）更难测试。</p>
+<blockquote>
+<p>若一个方法<strong>接受 Lambda 表达式作为参数</strong>，可以<strong>使用不同的 Lambda 表达式对它进行测试</strong>。</p>
+<p>若被测试方法的<strong>返回值是另一个方法</strong>，可把返回值当成一个函数接口，<strong>对返回值的功能进行测试</strong>。</p>
+</blockquote>
+<h3 id="-">调试</h3>
+<p>调试有问题的代码通常有两种方法：</p>
+<ul>
+<li><strong>查看栈跟踪</strong></li><li><strong>输出日志</strong></li></ul>
+<p>Lambda 表达式没有名字，因此它的栈跟踪可能很难分析。</p>
+<blockquote>
+<p><strong>编译器</strong>会为 Lambda 表达式<strong>指定一个名字</strong>，但看起来并不直观。</p>
+<p>若方法引用<strong>指向的是同一个类中声明的方法</strong>，那么它的名称<strong>可以在栈跟踪中显示</strong>。</p>
+</blockquote>
+<p>Stream API 的 <strong>peek 方法</strong>的目的是在流的<strong>每个元素恢复运行之前</strong>，<strong>插入执行一个动作</strong>。</p>
+<blockquote>
+<p>它不像 forEach 那样恢复整个流的运行，而是在<strong>一个元素上完成操作之后</strong>，<strong>将操作转到流水线中的下一个操作</strong>。</p>
+</blockquote>
+<p><img src="https://i.imgur.com/bInI5Pg.png" alt=""></p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
